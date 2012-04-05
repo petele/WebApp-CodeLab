@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<!--
+Copyright 2012 Google Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+
+  Based on HTML5Slides from http://code.google.com/p/html5slides/
+  Special thanks to: Eric Bidelman, Luke MahŽ, Marcin Wichary,
+                     Dominic Mazzoni, Charles Chen
+
+  Authors: Chris Wilson (cwilso@chromium.org)
+           Pete LePage (petele@google.com)
+-->
+
+<html>
+<head>
+  <title data-config-title></title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|Droid+Sans+Mono&v2">
+</head>
+
+<body style="display: none">
+
+<section class='slides layout-regular'>
+  <article class="exercise fill">
+    <h2 class="shadow-banner">Get Course Materials</h2>
+    <p>
+      Please download (or fork) the course materials now:<br><br>
+      <a href="https://github.com/petele/webapp-codelab">https://github.com/petele/webapp-codelab</a>
+    </p>
+
+  </article>
+
+  <article class="title-slide">
+    <div>
+      <div data-config-logo></div>
+      <p data-config-name></p>
+      <p data-config-subtitle></p>
+      <h1 data-config-title></h1>
+      <p class="info">
+        <time datetime="YYYY-MM-DD" data-config-date>MM DD, 2011</time> &nbsp; - &nbsp; <span data-config-location></span>
+      </p>
+      <img data-config-map title="Of course we're using Geolocation!" alt="Of course we're using Geolocation!">
+    </div>
+  </article>
+
+  <article id="who">
+    <h3>Who?</h3>
+    <p>
+      <img class="avatar" data-config-pic>
+    </p>
+    <p>
+      <a rel="author" data-config-gplus target="_blank">
+        <img src="http://www.google.com/images/icons/ui/gprofile_button-44.png" width="44" height="44">
+      </a> +<a rel="author" data-config-gplus target="_blank"><span data-config-name></span></a>
+    </p>
+    <br>
+    <p>
+      <a rel="author" data-config-twitter target="_blank" style="margin-left:-8px;">
+        <img src="images/twitter_newbird_blue.png" width="58" height="58">
+      </a> @ <a rel="author" data-config-twitter target="_blank" style="margin-left:-8px;"><span data-config-twitter></span></a>
+    </p>
+    <p>
+      <a rel="author" data-config-blog target="_blank"><span data-config-blog></span></a>
+    </p>
+  </article>
+
+  <article>
+    <q>The craze for native apps is a short one and we are already seeing it on the wane.</q>
+    <div class='author'>
+      <a href="http://assanka.net/content/what/2011/06/09/ft-launches-first-major-html5-mobile-news-app/">Assanka</a>
+    </div>
+  </article>
+
+  <article class="fill">
+    <img class="centered" src="images/ftss.png" style="width: 100%;">
+    <div class="build">
+      <div class="overlaybox">
+        <ul class="build" style="margin-top: 10px;">
+          <li>Launched in June, 2011</li>
+          <li>Over <strong>1 million</strong> unique users</li>
+          <li><strong>2.5</strong> times more likely to subscribe</li>
+          <li>Drove digital subscriptions to beyond <strong>250,000</strong></li>
+          <li>In January 2012, Financial Times <strong>bought Assanka</strong></li>
+          <li>Simplifying development with the <strong>web app as the basis for all platforms</strong></li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="agenda">
+    <h3>Agenda</h3>
+    <ul class="build fade">
+      <li>What is a web app?</li>
+      <li>Boilerplates and MVC Frameworks</li>
+      <li>Creating rich &amp; beautiful experiences</li>
+      <li>Enabling offline</li>
+      <li>Performance tips &amp; techniques</li>
+    </ul>
+  </article>
+
+  <article class="exercise fill">
+    <img class="centered" src="images/wreader.png" style="width: 100%;">
+    <ul>
+      <h2 class="shadow-banner"><a href="../finalproject/" target="_blank">WReader</a></h2>
+    </ul>
+  </article>
+
+  <article class="segue fill">
+    <h2 class="shadow-banner">Web Application Fundamentals</h2>
+  </article>
+
+  <article>
+    <h3>Checklist for identifying web apps</h3>
+    <ul class="build fade">
+      <li>Mostly <strong>self-contained</strong>.</li>
+      <li>Encourages users to <strong>interact, engage &amp; accomplish</strong>.</li>
+      <li>It has a <strong>rich user interface</strong>.</li>
+      <li>The same <strong>design paradigms as native applications</strong>.</li>
+      <li>It works <strong>offline</strong>.</li>
+      <li>Takes advantage of the <strong>capabilities of the device</strong>.</li>
+      <li>Traditional web<strong>site</strong> navigational are <strong>hidden from view</strong>.</li>
+      <li>Uses a primarily <strong>client-side architecture model</strong></li>
+    </ul>
+  </article>
+
+  <article class="fill">
+    <img src="images/springpad.png">
+  </article>
+
+  <article class="fill">
+    <img src="images/gojee.png">
+  </article>
+
+  <article class="fill">
+    <img src="images/280slides.png">
+  </article>
+
+  <article class="fill">
+    <img class="centered" src="images/devtools.png" style="width: 100%;">
+    <div class="build">
+      <div class="overlaybox">
+        <ul class="build fade" style="margin-top: 10px;">
+          <li>Debug HTML, CSS, JavaScript, Networking &amp; more</li>
+          <li>Live edit and save in Resources</li>
+          <li>Pretty print minified scripts</li>
+          <li>Add break points, watches, etc</li>
+          <li>Console supports $("div")</li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <!--
+    Application Architecture Section - implementing the MVC Framework
+    components
+  -->
+  <article class="exercise fill">
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 1</li>
+    </ol>
+  </article>
+
+  <article class="segue fill">
+    <img src="images/messofwires.png">
+    <h2 class="shadow-banner">Web Application Architecture</h2>
+  </article>
+
+  <article>
+    <h3>MVC fundamentals</h3>
+    <p>Model View Controllers help to separate the data, from the business
+      layer and the views.</p>
+    <div class="centered">
+      <img src="images/mvc-c.png" alt="MVC controller"><br/>
+      <div style="margin-top:25px;">
+        <img class="arrow-llur" src="images/arrow.png">
+        <img src="images/mvc-v.png" alt="view">
+        <img class="arrow-lr" src="images/arrow.png">
+        <img src="images/mvc-m.png" alt="model">
+        <img class="arrow-lrul" src="images/arrow.png">
+      </div>
+    </div>
+  </article>
+
+  <article>
+    <h3>WReader's MVC Architecture: Models</h3>
+    <pre>// Ember Object model for entry items
+WReader.Item = Em.Object.extend({
+  read: false,
+  starred: false,
+  item_id: null,
+  title: null,
+  pub_name: null,
+  pub_author: null,
+  pub_date: new Date(0),
+  short_desc: null,
+  content: null,
+  feed_link: null,
+  item_link: null
+});</pre>
+  </article>
+
+  <article>
+    <h3>WReader's MVC Architecture: Controller</h3>
+    <pre>WReader.dataController = Em.ArrayController.create({
+  content: [],
+
+  addItem: function(item) {
+    /* a little magic */
+  },
+
+  binarySearch: function(value, low, high) {
+    /* a little magic */
+    return mid;
+  },
+
+  itemCount: function() {
+    return this.get('length');
+  }.property('@each')
+});
+</pre>
+  </article>
+
+  <article>
+    <h3>WReader's MVC Architecture: Views</h3>
+    <pre>WReader.EntryItemView = Em.View.extend({
+  tagName: 'article',
+  contentBinding: 'WReader.selectedItemController.selectedItem',
+  classNames: ['well', 'entry'],
+  classNameBindings: ['active', 'read', 'prev', 'next'],
+
+  active: function() {
+    return true;
+  }.property('WReader.selectedItemController.selectedItem'),
+
+  read: function() {
+    var read = this.get('content').get('read');
+    return read;
+  }.property('WReader.itemsController.@each.read')
+});</pre>
+  </article>
+
+  <article class="exercise fill">
+
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 2</li>
+      <li>Exercise 3</li>
+      <li>Exercise 4</li>
+    </ol>
+  </article>
+
+  <article>
+    <h3>Getting Data Via Cross Domain Requests</h3>
+    <div class="build fade">
+      <div>
+        <p>HTTP Request</p>
+        <pre>GET /cors HTTP/1.1
+Origin: http://api.bob.com
+Host: api.alice.com
+Accept-Language: en-US
+Connection: keep-alive
+User-Agent: ...</pre>
+      </div>
+      <div>
+        <p>HTTP Response</p>
+        <pre>Access-Control-Allow-Origin: http://api.bob.com
+Access-Control-Allow-Credentials: true
+Access-Control-Expose-Headers: FooBar
+Content-Type: text/html; charset=utf-8</pre>
+
+      </div>
+    </div>
+
+  </article>
+
+    <article class="exercise fill">
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 5</li>
+    </ol>
+  </article>
+
+  <!--
+    Building Beautiful UIs Section - implementing the visuals including
+    the UI
+  -->
+  <article class="segue fill">
+    <h2 class="shadow-banner">Building Beautiful User Interfaces</h2>
+  </article>
+
+  <article>
+    <h3>Flex Box Model for application layout</h3>
+    <pre>.parent-box {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  overflow: hidden;
+}
+.box {
+  overflow-y: scroll;
+  -webkit-box-flex: 1;
+}
+.box.three {
+  -webkit-box-flex: 3;
+}</pre>
+    <style type="text/css">
+      .fblDemo div {
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+      }
+      .fblDemo .parent-box {
+        display: -webkit-box;
+        -webkit-box-orient: horizontal;
+        height: 100px;
+        overflow: hidden;
+      }
+      .fblDemo .parent-box .box {
+        overflow-y: scroll;
+        -webkit-box-flex: 1;
+      }
+      .fblDemo .parent-box .box.two {
+        background-color: #ccc;
+      }
+      .fblDemo .parent-box .box.three {
+        -webkit-box-flex: 3;
+      }
+    </style>
+    <div class="fblDemo">
+      <div class="nav">Navigation Bar</div>
+      <div class="parent-box">
+        <div class="box one">Box 1<br>1<br>2<br>3<br>4<br>5<br>6</div>
+        <div class="box two">Box 2<br>1<br>2<br>3<br>4<br>5<br>6</div>
+        <div class="box three">Box 3<br>1<br>2<br>3<br>4<br>5<br>6</div>
+      </div>
+  </div>
+  </article>
+
+  <article class="fill">
+    <h3>Style from scatch?</h3>
+    <div class="build">
+      <img class="centered" src="images/bootstrap.png" style="width: 100%;">
+      <div class="overlaybox" style="text-align:center;margin-top:25px;">
+        <strong>Please, please, please</strong> - take some time to customize your apps!
+      </div>
+    </div>
+  </article>
+
+  <article class="exercise fill">
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 6</li>
+      <li>Exercise 7</li>
+      <li>Exercise 8</li>
+    </ol>
+  </article>
+
+  <!--
+    Designing for Offline Scenarios - implementing the offline experience
+  -->
+  <article class="segue fill">
+    <h2 class="shadow-banner">Adding 'Offline' Scenarios</h2>
+  </article>
+
+  <article>
+    <h3>It's Not Just About</h3>
+    <p>TODO: offline, intermittent scenarios, performance, always available</p>
+  </article>
+
+  <article>
+    <h3>Differences between online &amp; offline architecture</h3>
+    <p>TODO: clinet side vs server side, storage, sync</p>
+  </article>
+
+  <article>
+    <h3 id="offline-head">Tools for building offline scenarios</h3>
+    <div class="build fade">
+      <div style="margin-top:20px;">
+        <p>Application Cache to enable the application</p>
+        <pre style="margin-top:5px;margin-bottom:20px;">&lt;html <b>manifest="cache.appcache"</b>&gt;</pre>
+      </div>
+      <div>
+        <p>Store data locally</p>
+        <pre style="margin-top:5px;margin-bottom:10px;">window.requestFileSystem(PERSISTENT, 1048576, initFs, fsError);</pre>
+        <pre style="margin-bottom:10px;margin-top:0px;">var idbRequest = window.indexedDB.open('Database Name');</pre>
+        <pre style="margin-bottom:20px;margin-top:0px;">localStorage["key"] = "value";</pre>
+        </pre>
+      </div>
+      <div>
+        <p>Track online and offline states</p>
+        <pre style="margin-top:5px;margin-bottom:20px;">window.addEventListener('online', function(e) {
+  // Re-sync data with server.
+}, false);</pre>
+      </div>
+    </div>
+    <script type="text/javascript">
+      if (navigator.onLine) {
+        document.getElementById("offline-head").classList.add("green");
+      } else {
+        document.getElementById("offline-head").classList.add("red");
+      }
+
+      window.addEventListener('online', function(e) {
+        document.getElementById("offline-head").classList.add("green");
+        document.getElementById("offline-head").classList.remove("red");
+      }, false);
+
+      window.addEventListener('offline', function(e) {
+        document.getElementById("offline-head").classList.add("red");
+        document.getElementById("offline-head").classList.remove("green");
+      }, false);
+    </script>
+  </article>
+
+  <article>
+    <h3>Adding offline to WReader</h3>
+    <div class="build fade" style="margin-top:25px;">
+      <div>
+        <p>Create the Lawnchair instance</p>
+      <pre style="margin-top:5px;margin-bottom:20px;">
+var store = new Lawnchair({name: 'entries', record: 'entry'},
+  function() {});</pre>
+      </div>
+
+      <div>
+        <p>Add items to the Lawnchair database</p>
+        <pre style="margin-top:5px;margin-bottom:20px;">store.save(item);</pre>
+      </div>
+
+      <div>
+        <p>Get all the items from the database</p>
+        <pre style="margin-top:5px;margin-bottom:20px;">var items = store.all(function(arr) {
+  arr.forEach(function(entry) {
+    var item = WReader.Item.create(entry);
+    WReader.dataController.addItem(item);
+  });
+});</pre>
+      </div>
+  </article>
+
+
+  <article class="exercise fill">
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 9</li>
+      <li>Exercise 10</li>
+    </ol>
+  </article>
+
+  <!--
+    Improving the User Experience -
+  -->
+  <article class="segue fill">
+    <h2 class="shadow-banner">Improving the user experience</h2>
+  </article>
+
+  <article class="fill">
+    <h3>Make it easy to try &amp; use</h3>
+    <img src="images/barriers2.png">
+    <div class="build">
+      <div class="overlaybox" style="margin-top:50px;">
+        <ul class="build fade">
+          <li>Make it <strong>easy to try without signing up</strong> first</li>
+          <li>Provide an <strong>OpenID</strong> sign-up option</li>
+          <li>Try the <a href="http://bit.ly/qrM2V0">Google Identity Toolkit</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="smaller" onslideenter="matchMediaSlideLoad();" onslideleave="matchMediaSlideUnLoad()">
+    <h3>Use responsive layout for different form factors</h3>
+    <div class="centered" style="height:175px;">
+      <img id="mqPhone" src="images/nexuss.jpg" class="device"><img id="mqTablet" src="images/ipad.png" class="device"><img id="mqLaptop" src="images/laptop.png" class="device">
+    </div>
+    <div class="build fade" style="margin-bottom:0px;">
+      <div>
+        <p style="margin-top:30px;">Media Queries for Style Sheets</p>
+        <pre style="margin-top:5px;margin-bottom:10px;">&lt;link rel="stylesheet" media="all" href="/static/css/base.min.css" /&gt;
+&lt;link rel="stylesheet" media="only screen and (max-width: 800px)"
+  href="/static/css/mobile.min.css" /&gt;</pre>
+      </div>
+      <div>
+        <p>Testing CSS media queries in JavaScript with <code>window.<strong>matchMedia()</strong></code></p>
+        <pre style="margin-top:2px;margin-bottom:20px;">if (window.matchMedia('only screen and (max-width: 480px)').matches) {
+  // Asynchronously provide experience optimized for phone
+} else if (window.matchMedia('only screen and (min-width: 481px) and ' +
+                             '(max-width: 1024px)').matches) {
+  // Asynchronously provide experience optimized for table or smaller screen
+} else {
+  // Asynchronously provide full screen experience
+}</pre>
+      </div>
+    </div>
+    <script type="text/javascript">
+      (function() {
+
+        function onWinResize(e) {
+          if (window.matchMedia('only screen and (max-width: 480px)').matches) {
+            document.getElementById("mqPhone").classList.add("mqHighlight");
+            document.getElementById("mqTablet").classList.remove("mqHighlight");
+            document.getElementById("mqLaptop").classList.remove("mqHighlight");
+          } else if (window.matchMedia('only screen and (min-width: 481px) and (max-width: 1024px)').matches) {
+            document.getElementById("mqPhone").classList.remove("mqHighlight");
+            document.getElementById("mqTablet").classList.add("mqHighlight");
+            document.getElementById("mqLaptop").classList.remove("mqHighlight");
+          } else {
+            document.getElementById("mqPhone").classList.remove("mqHighlight");
+            document.getElementById("mqTablet").classList.remove("mqHighlight");
+            document.getElementById("mqLaptop").classList.add("mqHighlight");
+          }
+        }
+
+        window.matchMediaSlideLoad = function(e) {
+          onWinResize('x');
+          window.addEventListener('resize', onWinResize, false);
+        };
+
+        window.matchMediaSlideUnLoad = function(e) {
+          window.removeEventListener('resize', onWinResize, false);
+        };
+      }());
+    </script>
+
+  </article>
+
+  <article>
+    <h3>Allow for deep linking &amp; single page navigation</h3>
+    <div class="build fade">
+      <div>
+        <pre style="margin-bottom: 20px;">window.history.pushState(state, title, url);</pre>
+        </div>
+        <div>
+          <pre style="margin-bottom: 20px;margin-top:10px;">window.addEventListener('popstate', handlePopState, false);</pre>
+        </div>
+        <div>
+          <pre style="margin-bottom: 20px;margin-top:10px;">function handlePopState(event) {
+  if (event.state != null) {
+    WReader.selectedItemController.select(event.state);
+  }
+};</pre>
+        </div>
+      </div>
+  </article>
+
+  <article>
+    <h3>Let the user tell you what they want</h3>
+    <pre>&lt;input type="text" x-webkit-speech /&gt;</pre>
+    <input id="speech-input-textbox" type="text" x-webkit-speech style="width:400px;height:50px;font-size:135%;margin-left:auto;margin-right:auto;display:block;">
+    <div class="build">
+      <div>
+        <pre>function startSearch(event) {
+  if (event.target.results.length > 1) {
+    var second = event.target.results[1].utterance;
+    document.getElementById("second_best").value = second;
+  }
+  event.target.form.submit();
+}</pre>
+        <div id="speech-results" class="speech-results">
+        </div>
+
+        <script>
+          document.getElementById("speech-input-textbox").addEventListener("webkitspeechchange", function(event) {
+            var speechresults = document.getElementById('speech-results');
+            speechresults.innerHTML = '';
+            for (var res in event.results) {
+              speechresults.innerHTML += 'Utterance: ' + event.results[res]['utterance'] + '<br />Confidence: '
+                + event.results[res]['confidence'] + '<br /><br />';
+            }
+          }, false);
+        </script>
+      </div>
+    </div>
+  </article>
+
+  <article class="exercise fill">
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 11</li>
+      <li>Experiment with anything else!</li>
+    </ol>
+  </article>
+
+
+  <!--
+    Performance Tips & Tricks -
+  -->
+  <article class="segue fill">
+    <h2 class="shadow-banner">Treat performance like a feature</h2>
+  </article>
+
+  <article>
+    <h3>Top 3 Perf Improvement Tips</h3>
+    <div class="build">
+      <div class="overlaybox">
+        <ul class="build" style="margin-top: 10px;">
+          <li>Minimize the HTTP requests</li>
+          <li>Use a content delivery network</li>
+          <li>Enable caching from the server</li>
+          <li>Stylesheets at the top, scripts at the bottom</li>
+          <li>Minify your JavaScript and CSS</li>
+          <li>
+            More at <a href="http://developer.yahoo.com/performance/rules.html">
+            developer.yahoo.com/performance/rules.html</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </article>
+
+  <article class="exercise fill">
+    <h2 class="shadow-banner">WReader: Code Lab</h2>
+    <p>Time to play!</p>
+    <ol>
+      <li>Exercise 12</li>
+    </ol>
+  </article>
+
+  <article class="segue fill">
+    <h2 class="shadow-banner">One last thing...</h2>
+  </article>
+
+  <article class="build">
+    <q style="margin-top: 50px;font-size:64pt;font-weight:bold">Aim for a great experience, everything else will follow.</q>
+  </article>
+
+  <article class="closing-slide">
+    <div>
+      <div data-config-logo></div>
+      <p id="end-thanks">Thanks!</p>
+      <h3 id="end-questions">Questions?</h3>
+      <p>
+        <a rel="author" data-config-gplus target="_blank">+<span data-config-name></span></a>
+        <a rel="author" data-config-twitter target="_blank">@<span data-config-twitter></span></a>
+      </p>
+      <p class="info">
+        Slides: <a data-config-slides target="_blank"><span data-config-slides></span></a><br>
+        Feedback: <a data-config-feedback target="_blank"><span data-config-feedback></span></a><br>
+      </p>
+    </div>
+  </article>
+
+  <article class="biglogo">
+  </article>
+
+</section>
+
+<script src="js/config.js"></script>
+<script src='js/slides.js'></script>
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+
+</body>
+</html>
