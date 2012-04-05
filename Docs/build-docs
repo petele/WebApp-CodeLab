@@ -1,0 +1,7 @@
+perl ../tools/Markdown.pl --html4tags Instructions.md > temp.html
+cat doc_top.shtml temp.html doc_bottom.shtml > index.html
+rm temp.html
+
+perl ../tools/Markdown.pl --html4tags errata.md > temp.html
+cat doc_top.shtml temp.html doc_bottom.shtml > errata.html
+rm temp.html

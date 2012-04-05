@@ -1,0 +1,25 @@
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../finalproject/js/libs/jquery-1.7.1.min.js"></script>
+    <script src="../finalproject/js/libs/bootstrap.js"></script>
+    <script type="text/javascript" src="prettify.js"></script>
+
+    <script type="text/javascript">
+      $("pre").addClass("prettyprint");
+      prettyPrint();
+    </script>
+
+  </body>
+</html>

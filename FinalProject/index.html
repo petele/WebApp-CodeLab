@@ -1,0 +1,217 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/i/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>wReader</title>
+  <meta name="description" content="">
+
+  <!-- Mobile viewport optimized: h5bp.com/viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except this Modernizr build.
+       Modernizr enables HTML5 elements & feature detects for optimal performance.
+       Create your own custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="js/libs/modernizr-2.5.3.min.js"></script>
+</head>
+<body>
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+ 
+  <header>
+    <script type="text/x-handlebars">
+    {{#view WReader.NavBarView}}
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" data-toggle="modal" href="#modalAbout">
+            wReader
+          </a>
+          <ul class="nav">
+            <li class="divider-vertical"></li>
+            <li class="itemCount"><a {{action "showAll" on="click"}}>{{itemCount}} Items</a></li>
+            <li class="divider-vertical"></li>
+            <li class="itemCount"><a {{action "showUnread" on="click"}}>{{unreadCount}} Unread</a></li>
+            <li class="divider-vertical"></li>
+            <li class="itemCount"><a {{action "showStarred" on="click"}}>{{starredCount}} Starred</a></li>
+            <li class="divider-vertical"></li>
+            <li class="itemCount"><a {{action "showRead" on="click"}}>{{readCount}} Read</a></li>
+            <li class="divider-vertical"></li>
+          </ul>
+          <form class="navbar-search pull-left" id="navSearch">
+            <input type="text" class="search-query" placeholder="Search">
+          </form>
+          <ul class="nav pull-right">
+            <li><a {{action "showSettings" on="click"}}><i class="icon-cog icon-white"></i></a></li>
+            <!--
+            <li><a {{action "showUserConfig" on="click"}}><i class="icon-user icon-white"></i></a></li>
+            -->
+            <li><a {{action "refresh" on="click"}}><i class="icon-refresh icon-white"></i></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {{/view}}
+    </script>
+  </header>
+  <section class="mainContent">
+    
+      <script type="text/x-handlebars">
+        {{#view WReader.NavControlsView}}
+        <div class="tControls">
+          <div class="top">
+            <button {{action "markAllRead"}} class='btn'><i class="icon-ok"></i></button>
+          </div>
+          <div class="middle">
+            <button {{action "navUp"}} class='btn'><i class="icon-arrow-up"></i></button>
+            <button {{action "toggleStar"}} {{bindAttr disabled="buttonDisabled"}} class='btn'>
+              <i {{bindAttr class="starClass"}}></i>
+            </button>
+            <button {{action "toggleRead"}} {{bindAttr disabled="buttonDisabled"}} class='btn'>
+              <i {{bindAttr class="readClass"}}></i>
+            </button>
+            <button {{action "navDown"}} class='btn'><i class="icon-arrow-down"></i></button>
+          </div>
+          <div class="bottom">
+            <button {{action "refresh"}} class='btn'><i class="icon-refresh"></i></button>
+          </div>
+        </div>
+        {{/view}}
+      </script>
+   
+    <section class="summaries">
+      <script type="text/x-handlebars">
+          {{#each WReader.itemsController}}
+            {{#view WReader.SummaryListView contentBinding="this"}}
+              <div class="row-fluid">
+                <div class="span6 pub-name">
+                  {{content.pub_name}}
+                </div>
+                <div class="span6 pub-date">
+                  {{formattedDate}}
+                </div>
+              </div>
+              <h3 class="pub-title">{{content.title}}</h3>
+            {{/view}}
+          {{/each}}
+      </script>
+    </section>
+
+    <section class="entries">
+      <script type="text/x-handlebars">
+        {{#if WReader.selectedItemController.selectedItem}}
+          {{#view WReader.EntryItemView}}
+            <div class="row-fluid">
+              <div class="span8">{{formattedDate}}</div>
+                <div class="span4 actions">
+                  {{view Em.Checkbox class="read" valueBinding="content.read"}}
+                  {{view Em.Checkbox class="star" valueBinding="content.starred"}}
+                  <a target="_blank" {{bindAttr href="content.item_link"}}><i class="icon-share"></i></a>
+                </div>
+              </div>
+              <h2>{{content.title}}</h2>
+              <span class="author">{{content.pub_author}}</span> - <span class="pub-name">{{content.pub_name}}</span>
+              <hr />
+              <p class="post-content">{{{content.content}}}</p>
+            {{/view}}
+          {{else}}
+            <div class="nothingSelected">
+              <img src="img/sadpanda.png" alt="Sad Panda">
+              <p>Nothing selected.</p>
+            </div>
+          {{/if}}
+      </script>
+    </section>
+  </section>
+
+  <div class="modal fade" id="modalAbout">
+    <div class="modal-header">
+      <a class="close" data-dismiss="modal">×</a>
+      <h3>About wReader</h3>
+    </div>
+    <div class="modal-body">
+      <p>One fine body…</p>
+    </div>
+    <div class="modal-footer">
+      <a data-dismiss="modal" class="btn btn-primary">Close</a>
+    </div>
+  </div>
+
+  <script type="text/x-handlebars">
+    {{#view WReader.SettingsView id="modalSettings"}}
+      <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>About wReader</h3>
+      </div>
+      <div class="modal-body">
+        <p>One fine body…</p>
+      </div>
+      <div class="modal-footer">
+        <a data-dismiss="modal" class="btn btn-primary">Close</a>
+      </div>
+    {{/view}}
+  </script>
+
+  <script type="text/x-handlebars">
+    {{#view WReader.UserView id="modalUser"}}
+      <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>About wReader</h3>
+      </div>
+      <div class="modal-body">
+        <p>One fine body…</p>
+      </div>
+      <div class="modal-footer">
+        <a data-dismiss="modal" class="btn btn-primary">Close</a>
+      </div>
+    {{/view}}
+  </script>
+  <footer>
+
+  </footer>
+</script>
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
+  <!-- scripts concatenated and minified via build script -->
+  <script src="js/libs/bootstrap.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/libs/lawnchair-0.6.1.js"></script>
+  <script src="js/libs/lawnchair-pagination-0.6.1.js"></script>
+  <script src="js/libs/moment-1.4.0.min.js"></script>
+  <script src="js/libs/ember-0.9.5.min.js"></script>
+  <script src="js/app.js"></script>
+  <!-- end scripts -->
+
+  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
+       mathiasbynens.be/notes/async-analytics-snippet -->
+  
+  <script>
+    var _gaq=[['_setAccount','UA-29459980-1'],['_trackPageview']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+</body>
+</html>

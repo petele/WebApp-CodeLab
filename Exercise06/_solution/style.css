@@ -1,0 +1,62 @@
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  padding-top: 40px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.navbar .navbar-inner {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.navbar .container {
+  width: 100%;
+  min-width: 960px;
+}
+
+.itemCount {
+  width: 90px;
+  text-align: center;
+}
+
+section.mainContent {
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding-bottom: 0px;
+}
+
+section.mainContent div {
+  height: 100%;
+}
+
+.controls {
+  box-sizing: border-box;
+  padding: 5px;
+  width: 50px;
+  margin: 0;
+  height: 100%;
+}
+
+.summaries {
+  box-sizing: border-box;
+  padding: 10px;
+  overflow-y: scroll;
+  width: 300px;
+}
+
+.entries {
+  padding: 10px;
+  box-sizing: border-box;
+  -webkit-box-flex: 1;
+  overflow-y: scroll;
+  padding-left: 10px;
+}
