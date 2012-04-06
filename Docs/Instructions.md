@@ -7,7 +7,7 @@ This codelab covers the techniques and design fundamentals required to create mo
 
 * Using an MVC framework
 * Making cross-domain requests and handling JSON data
-* Creating user interfaces & experiences that feel app like
+* Creating user interfaces & experiences that are action oriented and app-like
 * Enabling offline experiences
 
 ### Prerequisites
@@ -35,7 +35,7 @@ In this exercise, we'll create our data model and controller, and then add a sim
 ### Step 1: Creating the Ember object
 The first thing we need to do is create an Ember object to store our data feeds in.  We will extend the `Em.Object` and create a new `Item` object with the following properties: `read`, `starred`, `item_id`,  `title`, `pub_name`, `pub_author`, `pub_date`, `short_desc`, `content`, `feed_link`, and `item_link`.
 
-#### Exercise 2.1 (app.js)
+#### Exercise 2.1 (js/app.js)
     // Ember Object model for entry items
     WReader.Item = Em.Object.extend({
       read: false,
@@ -54,7 +54,7 @@ The first thing we need to do is create an Ember object to store our data feeds 
 ### Step 2: Create a data controller to store our items
 Next, we need to create a data controller object (`dataController`) by extending the Ember array controller class.  Ember leaves it up to us how we store the data, and add items to the controller, so we'll need to add an array to store the data (`content: []`), and a method (`addItem: function(item)`) to add items to the array.  To save some time, we've already added a binary search method (`binarySearch: function(value, low, high)`) to make it easier to add them items to the array in a `pub_date` sorted order.
 
-#### Exercise 2.2 (app.js)
+#### Exercise 2.2 (js/app.js)
     // content array for Ember's data
     content: [],
 
@@ -79,7 +79,7 @@ Next, we need to create a data controller object (`dataController`) by extending
 ### Step 3: Add a summary list view
 Now that we've got data into our controller, we need a way to display it on screen with a view.  For now, we'll just create a simple view that creates an article tag, with two classes `well` and `summary`.
 
-#### Exercise 2.3 (app.js)
+#### Exercise 2.3 (js/app.js)
     tagName: 'article',
     classNames: ['well', 'summary']
 
@@ -87,7 +87,7 @@ Now that we've got data into our controller, we need a way to display it on scre
 We've got the view defined in our framework, we need to render it in the HTML somewhere.  We'll put this in the `mainContent` `section` element and put all of these items into a child section with the class `summaries`.
 
 
-#### Exercise 2.4 (app.js)
+#### Exercise 2.4 (index.html)
     <script type="text/x-handlebars">
       {{#each WReader.dataController}}
         {{#view WReader.SummaryListView contentBinding="this"}}
@@ -125,7 +125,7 @@ Right now, it simply returns 1, but we want it to return the number of read item
 
 Now that you've got how to get the number of read items, let's add properties for `itemCount`, `readCount`, `unreadCount` and `starredCount`.
 
-#### Exercise 3.1 (app.js)
+#### Exercise 3.1 (js/app.js)
     // A 'property' that returns the count of items
       itemCount: function() {
       return this.get('length');
@@ -172,12 +172,12 @@ We want Ember to add the `read` and/or `starred` class to items in the `SummaryL
 
 First, let's add the `classNameBinding` property, and bind the `read` and `starred` properties, if the property returns `true`, it'll add the bound class.
 
-#### Exercise 3.4a (app.js)
+#### Exercise 3.4a (js/app.js)
     classNameBindings: ['read', 'starred']
 
 Next, we need to add the properties for `read` and `starred` items.  Since we already have a property on the item for `read` and `starred`, we can simply query that property and return its result. Like the counts, these are also properties, but instead of being updated every time `@each` object changes, we want them to update as the items change in the controller.
 
-#### Exercise 3.4b (app.js)
+#### Exercise 3.4b (js/app.js)
     // Enables/Disables the read CSS class
     read: function() {
       var read = this.get('content').get('read');
@@ -193,7 +193,7 @@ Next, we need to add the properties for `read` and `starred` items.  Since we al
 ### Step 5: Custom date formatting
 Finally, let's format the date in to something a little more human readable.  We've added [Moment.js](http://momentjs.com/), a date & time library that makes date formatting a lot easier.  Like we did for the `read` and `starred` properties on the view, we'll create a property on the view to return the formatted date.
 
-#### Exercise 3.5 (app.js)
+#### Exercise 3.5 (js/app.js)
     // Returns the date in a human readable format
     formattedDate: function() {
       var d = this.get('content').get('pub_date');
@@ -220,7 +220,7 @@ The `dataController` contains all of the items in our data store, but we don't a
 
 We also want to add two new functions to this controller, `clearFilter()` and `filterBy(key, value)`.  Using `filterBy()` set's the content of `itemsController` to the filtered results of the `dataController`.
 
-#### Exercise 4.1 (app.js)
+#### Exercise 4.1 (js/app.js)
     WReader.itemsController = Em.ArrayController.create({
     // content array for Ember's data
     content: [],
@@ -233,14 +233,19 @@ We also want to add two new functions to this controller, `clearFilter()` and `f
     // Sets content[] to all items in the data controller
     clearFilter: function() {
       this.set('content', WReader.dataController.get('content'));
-    }
+    },
+
+    // Shortcut for filterBy
+    showDefault: function() {
+      this.filterBy('read', false);
+    },
 
 ### Step 2: Add a navigation bar view
 The next step is to create a new view for the fixed navigation bar that will run across the top of the UI.  Its primary purpose will be to show the number of items in the `dataController`, and update the `itemsController`.
 
 In `NavBarView`, let's add properties for `itemCount`, `unreadCount`, `starredCount`, and `readCount` that returns the number of items in the `dataController`.  For example, `itemCount` would return `WReader.dataController.get('itemCount');`
 
-#### Exercise 4.2 (app.js)
+#### Exercise 4.2 (js/app.js)
     // A 'property' that returns the count of items
     itemCount: function() {
       return WReader.dataController.get('itemCount');
@@ -291,7 +296,7 @@ To change what's displayed in the `SummaryListView`, we need to add click handle
 
 Next, we need to handle the clicks in the `NavBarView` by creating a new function for each of the methods we've indicated, `showAll`, `showUnread`, `showStarred`, and `showRead`.
 
-#### Exercise 4.4b (app.js)
+#### Exercise 4.4b (js/app.js)
     // Click handler for menu bar
     showAll: function() {
       WReader.itemsController.clearFilter();
@@ -333,7 +338,7 @@ jQuery and the browser are smart enough to handle CORS requests for us and there
 
 First, let's create the GetItemsFromServer function off the WReader namespace, then we'll craft our request URL.
 
-#### Exercise 5.1 (app.js)
+#### Exercise 5.1 (js/app.js)
     WReader.GetItemsFromServer = function() {
       // URL to data feed that I plan to consume
       var feed = "http://blog.chromium.org/feeds/posts/default?alt=rss";
@@ -351,7 +356,7 @@ First, let's create the GetItemsFromServer function off the WReader namespace, t
 ### Step 2: Use jQuery to make the AJAX request
 Next, we can make the actual request using jQuery
 
-#### Exercise 5.2 (app.js)
+#### Exercise 5.2 (js/app.js)
     $.ajax({
       url: feedPipeURL,
       dataType: 'json',
@@ -362,7 +367,7 @@ Next, we can make the actual request using jQuery
 ### Step 3: Parse the returned data, create new items & insert into controller
 Once the data has been returned from the server, we can parse the data into individual items and insert them into the `dataController`.  Ember provides a `map` function that makes it easy to iterate through an array and do something with that array.  In our case, we'll use the `map` function to iterate over the RSS feed items, create new a Ember object then insert it into the `dataController`.
 
-#### Exercise 5.3 (app.js)
+#### Exercise 5.3 (js/app.js)
     // Get the items object from the result
     var items = data.query.results.rss.channel.item;
 
@@ -412,13 +417,13 @@ Once the data has been returned from the server, we can parse the data into indi
 ### Step 4: Fire GetItemsFromServer() at application start
 Since we want the application to start and get the latest data from the server, we'll add `WReader.GetItemsFromServer();` to the `var WReader = Em.Application.create({ ... });` function.
 
-#### Exercise 5.4 (app.js)
+#### Exercise 5.4 (js/app.js)
     WReader.GetItemsFromServer();
 
 ### Step 5: Add a refresh button to the NavBarView
 Our last step for this exercise will be to add a refresh button to the `NavBarView`, which means we need to add a  click handler to `NavBarView` and an anchor tag in `index.html` that will fire the handler.
 
-#### Exercise 5.5a (app.js)
+#### Exercise 5.5a (js/app.js)
     // Click handler for menu bar
     refresh: function() {
       WReader.GetItemsFromServer();
@@ -444,7 +449,7 @@ In exercise 6, we'll Twitter's Bootstrap UI framework, and a number of visual st
 ### Step 1: Add Bootstrap's UI style sheet
 We've already downloaded [Twitter's Bootstrap](http://twitter.github.com/bootstrap/), so we need to include the style sheet in our HTML.  For now, we'll only include the CSS style sheet, but it also comes with a small JavaScript that adds additional functionality.
 
-#### Exercise 6.1 (index.js)
+#### Exercise 6.1 (index.html)
     <link rel="stylesheet" href="css/bootstrap.css">
 
 ### Step 2: Add styling & semantics to header
@@ -563,7 +568,7 @@ In this exercise, we'll add the selected item controller to show which item are 
 ### Step 1: Create the SelectedItemController
 Like we have with our previous controllers, we need to create a new controller by extending Ember's base object `WReader.selectedItemController = Em.Object.create({ ... });`  In it we will need to add several properties, for example `selectedItem` to hold the selected item, `hasPrev` and `hasNext` to indicate if there are items in `itemsController` before or after the selected item.
 
-#### Exercise 7.1a (app.js)
+#### Exercise 7.1a (js/app.js)
     // Pointer to the seclected item
     selectedItem: null,
     hasPrev: false,
@@ -598,7 +603,7 @@ The `selectedItemController` sets `hasPrev` and `hasNext` when an item is select
 
 Next, we want to be able to both toggle and explictly set the read and starred state for this item.  We'll do that by creating two functions `toggleRead(bool)` and `toggleStar(bool)`.  The parameter is optional, and if it's not set, we should toggle the flag.
 
-#### Exercise 7.1b (app.js)
+#### Exercise 7.1b (js/app.js)
     // Toggles or sets the read state with an optional boolean
     toggleRead: function(read) {
       if (read === undefined) {
@@ -619,7 +624,7 @@ Next, we want to be able to both toggle and explictly set the read and starred s
 
 Finally, we want to have a way to move to the previous or next item in `itemsController`
 
-#### Exercise 7.1c (app.js)
+#### Exercise 7.1c (js/app.js)
     // Selects the next item in the item controller
     next: function() {
       // Get's the current index in case we've changed the list of items, if the
@@ -646,17 +651,17 @@ Finally, we want to have a way to move to the previous or next item in `itemsCon
       }
     }
 
-### Step 2: Adding our SelectedItemView
+### Step 2: Adding our EntryItemView
 By this time, hopefully you've got the hang of Ember's views, so let's create `WReader.EntryItemView` by extending `Em.View` as we've done in the past.  Since the content that will be represented is effectively an article from a blog, we'll specifically set the `tagName`, and add a few default classes like `well` and `entry`.
 
-#### Exercise 7.2a (app.js)
+#### Exercise 7.2a (js/app.js)
     tagName: 'article',
     contentBinding: 'WReader.selectedItemController.selectedItem',
     classNames: ['well', 'entry'],
 
 But, let's take this a step further, and instead of using the `classNameBindings` like we have in the past, let's actually specify the classes we want used for each item.  That way, we can have one class use if an item is read, and a different one if it isn't.  Twitter's Bootstrap library includes icons that will work perfectly for read/unread and starred/unstarred states.  We've also used [Moment.js](http://moment.js) again to provide some nice date formatting.
 
-#### Exercise 7.2b (app.js)
+#### Exercise 7.2b (js/app.js)
     // Enables/Disables the active CSS class
     active: function() {
       return true;
@@ -691,7 +696,7 @@ But, let's take this a step further, and instead of using the `classNameBindings
 ### Step 3: Add a click handler to the SummaryListView items
 Next we need some kind of way to select items from the `SummaryListView`.  To do that, we'll add a click handler to the view that will set the `selectedItemController`'s item to the item that was clicked on.  Ember is very helpful because it knows about certain event types (like `click`), which means we can add it to the `view`, but don't have to make any changes to our markup.
 
-#### Exercise 7.3 (app.js)
+#### Exercise 7.3 (js/app.js)
     // Handle clicks on an item summary
     click: function(evt) {
       // Figure out what the user just clicked on, then set selectedItemController
@@ -732,10 +737,10 @@ You'll notice that we've got the `{{#if}}` statement, the `{{else}}` and finally
 ### Step 5: Add an active property to SummaryListView
 It would be nice if we could indicate in the `summaryListView` on the left, which item is currently selected, so that users have a better idea of what they're looking at.  To do that, we'll add an additional class to the `classNameBindings` list, and an additional property to `summaryListView` to indicate if an item is selected in the `selectedItemController` or not.
 
-#### Exercise 7.5a (app.js)
+#### Exercise 7.5a (js/app.js)
     classNameBindings: ['read', 'starred', 'active'],
 
-#### Exercise 7.5b (app.js)
+#### Exercise 7.5b (js/app.js)
     // Enables/Disables the active CSS class
     active: function() {
       var selectedItem = WReader.selectedItemController.get('selectedItem');
@@ -789,7 +794,7 @@ Let's first add the view to our HTML.  We're going to use the flex box model in 
 
 Notice in `toggleStar` button, we've got `{{bindAttr disabled="buttonDisabled"}}`, this binds the `buttons`'s disabled property to the `buttonDisabled` property in `NavControlsView`.  This has the effect of enabling or disabling the button depending on if something is selected or not.
 
-#### Exercise 7.6b (app.js)
+#### Exercise 7.6b (js/app.js)
     starClass: function() {
       var selectedItem = WReader.selectedItemController.get('selectedItem');
       if (selectedItem) {
@@ -956,7 +961,7 @@ The EntryItemView could look so much better, and we want to add a set of control
 ### Step 3: Add a toggleRead and toggleStar to the EntryItemView
 Let's go ahead and add two handlers to toggle the read and star states of the selected item.
 
-#### Exercise 8.3 (app.js)
+#### Exercise 8.3 (js/app.js)
     toggleRead: function() {
       WReader.selectedItemController.toggleRead();
     },
@@ -983,7 +988,7 @@ In exercise 9, we're going to use [LawnChair](http://westcoastlogic.com/lawnchai
 ### Step 1: Create a LawnChair instance to store our data
 The first thing we need to do is create our LawnChair instance so that we've got quick and easy access to it.
 
-#### Exercise 9.1 (app.js)
+#### Exercise 9.1 (js/app.js)
     // Create or open the data store where objects are stored for offline use
     var store = new Lawnchair({name: 'entries', record: 'entry'}, function() {});
 
@@ -992,7 +997,7 @@ We need to create a method (`WReader.GetItemsFromDataStore`) to pull out any exi
 
 We're using `store.all` instead of `store.each` because LawnChair returns ther results asyncronously, which might lead to items being added from the server and the local store at the same time, something we don't want.  Once we've finished adding all of the items from the local data store, we'll ask the server if it has any new data by calling `WReader.GetItemsFromServer();`
 
-#### Exercise 9.2 (app.js)
+#### Exercise 9.2 (js/app.js)
     // Get all items from the local data store.
     var items = store.all(function(arr) {
       arr.forEach( function(entry) {
@@ -1012,13 +1017,13 @@ We're using `store.all` instead of `store.each` because LawnChair returns ther r
 ### Step 3: Update the start up flow to load local data first, then the server
 We want to remove the call to `WReader.GetItemsFromServer();` and replace it with `WReader.GetItemsFromDataStore();`, which will call `WReader.GetItemsFromServer();` when it's done.
 
-#### Exercise 9.3 (app.js)
+#### Exercise 9.3 (js/app.js)
     WReader.GetItemsFromDataStore();
 
 ### Step 4: Update dataController.addItem to prevent duplicates and store new items locally
 We don't want the local data store to contain duplicate items, so we need to be careful about adding them.  Our `dataController.addItem(item)` function returns true if the item is unique (and not currently saved locally) or false if it's already in the `dataController`.  That means we can use the result of `addItem` to determine if we should save the new item in the `store`.
 
-#### Exercise 9.4 (app.js)
+#### Exercise 9.4 (js/app.js)
     if (WReader.dataController.addItem(emItem)) {
       store.save(item);
     }
@@ -1065,7 +1070,7 @@ Exercise 10 - Adding AppCache to enable offline experiences
 
 ### Step 3: Add event handlers (optional)
 
-#### Exercise 10.3a (app.js)
+#### Exercise 10.3a (js/app.js)
     window.applicationCache.addEventListener('updateready', function(e) {
       if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
         $("#modalUpdate").modal({"show":true});
@@ -1118,7 +1123,7 @@ Exercise 11 - Adding keyboard and touch events
 
 ### Step 1: Add keyboard event handler
 
-#### Exercise 11.1a (app.js)
+#### Exercise 11.1a (js/app.js)
     function handleBodyKeyDown(evt) {
       if (evt.srcElement.tagName === "BODY") {
         switch (evt.keyCode) {
@@ -1152,7 +1157,7 @@ Exercise 11 - Adding keyboard and touch events
         }
     }
 
-#### Exercise 11.1b (app.js)
+#### Exercise 11.1b (js/app.js)
     WReader.HandleSpaceKey = function() {
       var itemHeight = $('.entry.active').height() + 60;
       var winHeight = $(window).height();
@@ -1165,7 +1170,7 @@ Exercise 11 - Adding keyboard and touch events
       }
     };
 
-#### Exercise 11.1c (app.js)
+#### Exercise 11.1c (js/app.js)
     document.addEventListener('keydown', handleBodyKeyDown, false);
 
 ### Step 2: Let's try it out!
@@ -1177,7 +1182,7 @@ Let's try it out!
 ### Step 3: Add touch events to the SummaryListView
 Since we want the same experience if a user touches an item in the summary view as if they clicked on it, we'll just have the `touchEnd` event pass directly to the `click` event handler.
 
-#### Exercise 11.3 (app.js)
+#### Exercise 11.3 (js/app.js)
     touchEnd: function(evt) {
       this.click(evt);
     }
