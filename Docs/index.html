@@ -56,18 +56,18 @@
             <ul class="nav nav-list">
               <li class="nav-header">Instructions</li>
               <li class="active"><a href="#">Introduction</a></li>
-              <li><a href="#">Exercise 1</a></li>
-              <li><a href="#">Exercise 2</a></li>
-              <li><a href="#">Exercise 3</a></li>
-              <li><a href="#">Exercise 4</a></li>
-              <li><a href="#">Exercise 5</a></li>
-              <li><a href="#">Exercise 6</a></li>
-              <li><a href="#">Exercise 7</a></li>
-              <li><a href="#">Exercise 8</a></li>
-              <li><a href="#">Exercise 9</a></li>
-              <li><a href="#">Exercise 10</a></li>
-              <li><a href="#">Exercise 11</a></li>
-              <li><a href="#">Exercise 12</a></li>
+              <li><a href="#exercise01">Exercise 1</a></li>
+              <li><a href="#exercise02">Exercise 2</a></li>
+              <li><a href="#exercise03">Exercise 3</a></li>
+              <li><a href="#exercise04">Exercise 4</a></li>
+              <li><a href="#exercise05">Exercise 5</a></li>
+              <li><a href="#exercise06">Exercise 6</a></li>
+              <li><a href="#exercise07">Exercise 7</a></li>
+              <li><a href="#exercise08">Exercise 8</a></li>
+              <li><a href="#exercise09">Exercise 9</a></li>
+              <li><a href="#exercise10">Exercise 10</a></li>
+              <li><a href="#exercise11">Exercise 11</a></li>
+              <li><a href="#exercise12">Exercise 12</a></li>
               <li class="nav-header">Errata &amp; Updates</li>
               <li><a href="#">Coming Soon</a></li>
             </ul>
@@ -100,13 +100,13 @@
 
 <hr>
 
-<h2>Exercise 1 - Boiler plate</h2>
+<h2 id="exercise01">Exercise 1 - Boiler plate</h2>
 
 <p>For our application, we've chosen to use <a href="http://html5boilerplate.com/">HTML5Boilerplate</a> as our starting point.  Take a few minutes to have a look around the included files, and customize title and description in index.html.  For now, leave the Google Analytics UA as is; we'll update that later.</p>
 
 <hr>
 
-<h2>Exercise 2 - Setup Model, Controller, and View</h2>
+<h2 id="exercise02">Exercise 2 - Setup Model, Controller, and View</h2>
 
 <p>We've chosen to use <a href="http://emberjs.com/">Ember.js</a> as our MVC framework, and have added that to the <code>/js/libs/</code> folder.  We've also added a <code>dev-helper.js</code> file for some simple testing and development use and will remove this before we complete the project.</p>
 
@@ -203,7 +203,7 @@ classNames: ['well', 'summary']
 
 <hr>
 
-<h2>Exercise 3 - Enhance View &amp; Controllers</h2>
+<h2 id="exercise03">Exercise 3 - Enhance View &amp; Controllers</h2>
 
 <p>In this exercise, we'll add some additional properties to our controller so we can quickly query for the number of items, how many have been read, starred.  We'll also create a function to format the date into something a little more human friendly.</p>
 
@@ -324,7 +324,7 @@ formattedDate: function() {
 
 <hr>
 
-<h2>Exercise 4 - Add New Controller &amp; NavBar</h2>
+<h2 id="exercise04">Exercise 4 - Add New Controller &amp; NavBar</h2>
 
 <p>In exercise 4, we'll add a new controller for filtering what's visible on screen and hook up a set of click events to the counters.</p>
 
@@ -454,7 +454,7 @@ showRead: function() {
 
 <hr>
 
-<h2>Exercise 5 - Pull Data From Server</h2>
+<h2 id="exercise05">Exercise 5 - Pull Data From Server</h2>
 
 <p>In this exercise, we're going to make a cross domain request to get the RSS feed data from another server, and then insert it into our data controller.  We'll use a Yahoo pipe to get the feed, since it supports CORS requests, and pull RSS feed from the Chromium blog.</p>
 
@@ -587,7 +587,7 @@ refresh: function() {
 
 <hr>
 
-<h2>Exercise 6 - Setup Application UI and UX</h2>
+<h2 id="exercise06">Exercise 6 - Setup Application UI and UX</h2>
 
 <p>In exercise 6, we'll Twitter's Bootstrap UI framework, and a number of visual styling elements to get WReader to look like a real web application instead of the jumble of text that it is now.</p>
 
@@ -728,7 +728,7 @@ refresh: function() {
 
 <hr>
 
-<h2>Exercise 7 - Add selected item controller &amp; view for controller</h2>
+<h2 id="exercise07">Exercise 7 - Add selected item controller &amp; view for controller</h2>
 
 <p>In this exercise, we'll add the selected item controller to show which item are currently 'selected', and provide functionality to move to the previous, or next one, mark the current one as read/unread and add or remove the starred attribute.</p>
 
@@ -1080,7 +1080,7 @@ buttonDisabled: function() {
 
 <hr>
 
-<h2>Exercise 8 - Add UI Enhancements</h2>
+<h2 id="exercise08">Exercise 8 - Add UI Enhancements</h2>
 
 <p>Right now our content is just being rendered on screen in a very boring way, in this exercise you'll update the content to look a little more styled and eye catching.</p>
 
@@ -1200,7 +1200,7 @@ toggleStar: function() {
 
 <hr>
 
-<h2>Exercise 9 - Adding LawnChair for persistent data storage</h2>
+<h2 id="exercise09">Exercise 9 - Adding LawnChair for persistent data storage</h2>
 
 <p>In exercise 9, we're going to use <a href="http://westcoastlogic.com/lawnchair/">LawnChair</a> as a simple data storage library.  LawnChair is good, but has some pretty significant issues that would prevent it from being used in production code, but they're fixable with a little effort.</p>
 
@@ -1270,7 +1270,7 @@ var items = store.all(function(arr) {
 
 <hr>
 
-<h2>Exercise 10 - Adding AppCache to enable offline experiences</h2>
+<h2 id="exercise10">Exercise 10 - Adding AppCache to enable offline experiences</h2>
 
 <h3>Step 1: Create the cache manifest</h3>
 
@@ -1363,7 +1363,7 @@ WReader.swapCache = function(value) {
 
 <hr>
 
-<h2>Exercise 11 - Adding keyboard and touch events</h2>
+<h2 id="exercise11">Exercise 11 - Adding keyboard and touch events</h2>
 
 <h3>Step 1: Add keyboard event handler</h3>
 
@@ -1443,7 +1443,7 @@ WReader.swapCache = function(value) {
 }
 </code></pre>
 
-<h2>Exercise 12 - Performance Tips &amp; Techniques</h2>
+<h2 id="exercise12">Exercise 12 - Performance Tips &amp; Techniques</h2>
 
 <p>Be sure to check out <a href="http://developer.yahoo.com/performance/rules.html">Best Practices for Speeding Up Your Web Site</a> from the good folks at <a href="http://developer.yahoo.com/">Yahoo</a>, who have done a lot of great work around this.</p>
 
@@ -1523,10 +1523,24 @@ java -jar ../tools/yuicompressor-2.4.7.jar js/app.js -o js/app.min.js
     <script src="../finalproject/js/libs/jquery-1.7.1.min.js"></script>
     <script src="../finalproject/js/libs/bootstrap.js"></script>
     <script type="text/javascript" src="prettify.js"></script>
+    <script src="hashchange.js"></script>
 
     <script type="text/javascript">
       $("pre").addClass("prettyprint");
       prettyPrint();
+    </script>
+
+    <script>
+      $().ready(function(){
+        // Fixing Anchor links nav leaving the destination text hidden under Header
+        $(window).hashchange(function() {
+          var hash = "#" + location.hash.replace(/[^A-Za-z0-9_\-]/g, "");
+          if (hash && $(hash).offset()) {
+            var pos = $(hash).offset().top - 60;
+            $(window).scrollTop(pos);
+          }
+        });
+      });
     </script>
 
     <script>
