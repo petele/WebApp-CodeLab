@@ -1,6 +1,11 @@
 WReader Code Lab
 ================
 
+
+<div class="alert alert-info">
+  <strong>Attention!</strong> Be sure to check the <a href="errata.html">errata documention</a> for important updates and a list of currently broken features.
+</div>
+
 Introduction
 ------------
 This codelab covers the techniques and design fundamentals required to create modern, 'lick-able' web applications.  The exercises look at the fundamentals of building web applications:

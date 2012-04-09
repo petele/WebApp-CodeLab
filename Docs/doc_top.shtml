@@ -67,6 +67,8 @@
               <li><a href="#">Exercise 10</a></li>
               <li><a href="#">Exercise 11</a></li>
               <li><a href="#">Exercise 12</a></li>
+              <li class="nav-header">Updates &amp; Errata</li>
+              <li><a href="errata.html">Errata</a></li>
               <li class="nav-header">Library Documentation</li>
               <li><a href="http://html5boilerplate.com/">HTML5 Boiler Plate</a></li>
               <li><a href="http://emberjs.com/">Ember.js</a></li>

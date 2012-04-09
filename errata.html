@@ -67,6 +67,8 @@
               <li><a href="#">Exercise 10</a></li>
               <li><a href="#">Exercise 11</a></li>
               <li><a href="#">Exercise 12</a></li>
+              <li class="nav-header">Updates &amp; Errata</li>
+              <li><a href="errata.html">Errata</a></li>
               <li class="nav-header">Library Documentation</li>
               <li><a href="http://html5boilerplate.com/">HTML5 Boiler Plate</a></li>
               <li><a href="http://emberjs.com/">Ember.js</a></li>
@@ -80,7 +82,19 @@
 
 <h1>WReader Code Lab Errata &amp; Updates</h1>
 
-<p>Nothing yet... :D</p>
+<p>This code lab is a work in progress, and there are a number of errors or items that need to be updated.  For the most up to date documentation and source code, be sure to check <a href="https://github.com/petele/WebApp-CodeLab">https://github.com/petele/WebApp-CodeLab</a>.</p>
+
+<h2>Exercise 1</h2>
+
+<p>Exercise 1 is a little weak right now and needs to be updated to include more of an EmberJS introduction.</p>
+
+<h2>LawnChair IndexedDB Adapter</h2>
+
+<p>The <a href="finalproject/js/libs/lawnchair-adapter-indexed-db-0.6.1.js">LawnChair IndexedDB Adapter</a> is currently hard coded to use the WebKit prefixes, which will fail for any non-webkit browser.  There are two solutions I'm currently investigating, updating the IndexedDB adapter, or replacing LawnChair with the <a href="https://github.com/jensarps/IDBWrapper">IDBWrapper</a>.</p>
+
+<h2>Vendor Prefixed CSS Styles</h2>
+
+<p>Almost all of the CSS is <code>-webkit</code> prefixed, and does not include prefixes for other browsers, this is a <em>bad</em> practice and needs to be fixed.  Beyond updating the documentation, a quick fix is to run the code through <a href="http://prefixr.com/">Prefixr</a>.</p>
         </div><!--/span-->
       </div><!--/row-->
 
