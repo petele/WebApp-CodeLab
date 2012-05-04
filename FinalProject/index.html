@@ -99,7 +99,7 @@
     </section>
 
     <section class="summaries">
-      <article ng-repeat="item in $parent.items" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
+      <article ng-repeat="item in $parent.filteredItems" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
         <div class="row-fluid" >
           <div class="span6 pub-name">
             {{item.pub_name}}
@@ -195,7 +195,6 @@
   <script src="js/libs/lawnchair-0.6.1.js"></script>
   <script src="js/libs/lawnchair-pagination-0.6.1.js"></script>
   <script src="js/libs/moment-1.4.0.min.js"></script>
-  <script src="js/libs/ember-0.9.5.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/filters.js"></script>
   <!-- end scripts -->
