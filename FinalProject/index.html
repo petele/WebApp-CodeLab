@@ -4,7 +4,7 @@
 <!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
 <!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" ng-app="wReader"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
 
@@ -30,16 +30,19 @@
        Modernizr enables HTML5 elements & feature detects for optimal performance.
        Create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="js/libs/modernizr-2.5.3.min.js"></script>
+
+  <script src="js/libs/angular/angular.min.js"></script>
+
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
 </head>
-<body>
+<body ng-controller="DataController" class="ng-cloak">
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
  
   <header>
-    <script type="text/x-handlebars">
-    {{#view WReader.NavBarView}}
-    <div class="navbar navbar-fixed-top">
+
+    <div class="navbar navbar-fixed-top no-select" ng-controller="NavBarController">
       <div class="navbar-inner">
         <div class="container">
           <a class="brand" data-toggle="modal" href="#modalAbout">
@@ -47,98 +50,90 @@
           </a>
           <ul class="nav">
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a {{action "showAll" on="click"}}>{{itemCount}} Items</a></li>
+            <li class="itemCount"><a ng-click="showAll()">{{itemCount()}} Items</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a {{action "showUnread" on="click"}}>{{unreadCount}} Unread</a></li>
+            <li class="itemCount"><a ng-click="showUnread()">{{unreadCount()}} Unread</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a {{action "showStarred" on="click"}}>{{starredCount}} Starred</a></li>
+            <li class="itemCount"><a ng-click="showStarred()">{{starredCount()}} Starred</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a {{action "showRead" on="click"}}>{{readCount}} Read</a></li>
+            <li class="itemCount"><a ng-click="showRead()">{{readCount()}} Read</a></li>
             <li class="divider-vertical"></li>
           </ul>
           <form class="navbar-search pull-left" id="navSearch">
             <input type="text" class="search-query" placeholder="Search">
           </form>
           <ul class="nav pull-right">
-            <li><a {{action "showSettings" on="click"}}><i class="icon-cog icon-white"></i></a></li>
+            <li><a ng-click="showSettings()"><i class="icon-cog icon-white"></i></a></li>
             <!--
             <li><a {{action "showUserConfig" on="click"}}><i class="icon-user icon-white"></i></a></li>
             -->
-            <li><a {{action "refresh" on="click"}}><i class="icon-refresh icon-white"></i></a></li>
+            <li><a ng-click="refresh()" title="Refresh all feeds" alt="Refresh all feeds"><i class="icon-refresh icon-white"></i></a></li>
           </ul>
         </div>
       </div>
     </div>
-    {{/view}}
-    </script>
   </header>
-  <section class="mainContent">
-    
-      <script type="text/x-handlebars">
-        {{#view WReader.NavControlsView}}
-        <div class="tControls">
-          <div class="top">
-            <button {{action "markAllRead"}} class='btn'><i class="icon-ok"></i></button>
+  <section class="mainContent" ng-controller="ItemsController">
+
+    <section class="controls no-select" ng-controller="NavControlsView">
+      <div class="tControls">
+        <div class="top">
+          <button ng-click="markAllRead()" class="btn" title="Mark all as read" alt="Mark all as read"><i class="icon-ok"></i></button>
+        </div>
+        <div class="middle">
+          <button ng-click="navUp()" class="btn" ng-disabled="!hasPrev()"><i class="icon-arrow-up"></i></button>
+          <button ng-click="toggleStar()" ng-disabled="!!!selectedItem()" class="btn">
+            <i ng-class="{'icon-star': selectedItem().starred, 'icon-star-empty': !selectedItem().starred}"></i>
+          </button>
+          <button ng-click="toggleRead()" ng-disabled="!!!selectedItem()" class="btn">
+            <i ng-class="{'icon-ok-sign': selectedItem().read, 'icon-ok-circle': !selectedItem().read}"></i>
+          </button>
+          <button ng-click="navDown()" class="btn" ng-disabled="!hasNext()"><i class="icon-arrow-down"></i></button>
+        </div>
+        <div class="bottom">
+          <button ng-click="refresh()" class="btn" title="Refresh feeds" alt="Refresh feeds">
+            <i class="icon-refresh"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="summaries">
+      <article ng-repeat="item in $parent.items" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
+        <div class="row-fluid" >
+          <div class="span6 pub-name">
+            {{item.pub_name}}
           </div>
-          <div class="middle">
-            <button {{action "navUp"}} class='btn'><i class="icon-arrow-up"></i></button>
-            <button {{action "toggleStar"}} {{bindAttr disabled="buttonDisabled"}} class='btn'>
-              <i {{bindAttr class="starClass"}}></i>
-            </button>
-            <button {{action "toggleRead"}} {{bindAttr disabled="buttonDisabled"}} class='btn'>
-              <i {{bindAttr class="readClass"}}></i>
-            </button>
-            <button {{action "navDown"}} class='btn'><i class="icon-arrow-down"></i></button>
-          </div>
-          <div class="bottom">
-            <button {{action "refresh"}} class='btn'><i class="icon-refresh"></i></button>
+          <div class="span6 pub-date">
+            {{item.pub_date | formattedDate}}
           </div>
         </div>
-        {{/view}}
-      </script>
-   
-    <section class="summaries">
-      <script type="text/x-handlebars">
-          {{#each WReader.itemsController}}
-            {{#view WReader.SummaryListView contentBinding="this"}}
-              <div class="row-fluid">
-                <div class="span6 pub-name">
-                  {{content.pub_name}}
-                </div>
-                <div class="span6 pub-date">
-                  {{formattedDate}}
-                </div>
-              </div>
-              <h3 class="pub-title">{{content.title}}</h3>
-            {{/view}}
-          {{/each}}
-      </script>
+        <h3 class="pub-title">{{item.title}}</h3>
+      </article>
     </section>
 
     <section class="entries">
-      <script type="text/x-handlebars">
-        {{#if WReader.selectedItemController.selectedItem}}
-          {{#view WReader.EntryItemView}}
-            <div class="row-fluid">
-              <div class="span8">{{formattedDate}}</div>
-                <div class="span4 actions">
-                  {{view Em.Checkbox class="read" valueBinding="content.read"}}
-                  {{view Em.Checkbox class="star" valueBinding="content.starred"}}
-                  <a target="_blank" {{bindAttr href="content.item_link"}}><i class="icon-share"></i></a>
-                </div>
-              </div>
-              <h2>{{content.title}}</h2>
-              <span class="author">{{content.pub_author}}</span> - <span class="pub-name">{{content.pub_name}}</span>
-              <hr />
-              <p class="post-content">{{{content.content}}}</p>
-            {{/view}}
-          {{else}}
-            <div class="nothingSelected">
-              <img src="img/sadpanda.png" alt="Sad Panda">
-              <p>Nothing selected.</p>
+
+      <article class="well entry" ng-class="{read: selectedItem().read, active: selectedItem().selected}" ng-hide="!!!selectedItem()">
+        <div class="row-fluid">
+          <div class="span8">{{selectedItem().pub_date | formattedDate}}</div>
+            <div class="span4 actions">
+              <input type="checkbox" class="read" ng-model="selectedItem().read">
+              <input type="checkbox" class="star" ng-model="selectedItem().starred">
+              <a href="{{selectedItem().item_link}}"><i class="icon-share"></i></a>
             </div>
-          {{/if}}
-      </script>
+          </div>
+          <h2>{{selectedItem().title}}</h2>
+          <span class="author">{{selectedItem().pub_author}}</span> - <span class="pub-name">{{selectedItem().pub_name}}</span>
+          <hr />
+          <p class="post-content" ng-bind-html-unsafe="selectedItem().content"></p>
+        </div>
+      </article>
+      <div class="nothingSelected" ng-show="!$parent.items.length || !!!selectedItem()">
+        <img src="img/sadpanda.png" alt="Sad Panda" title="Sad Panda">
+        <p>Nothing selected.</p>
+      </div>
+
     </section>
   </section>
 
@@ -202,6 +197,7 @@
   <script src="js/libs/moment-1.4.0.min.js"></script>
   <script src="js/libs/ember-0.9.5.min.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/filters.js"></script>
   <!-- end scripts -->
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.

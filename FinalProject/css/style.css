@@ -179,22 +179,30 @@ section.mainContent div {
   background-image: url("../img/glyphicons-halflings.png");
  }
 
-.entry .actions .star input[type=checkbox] {
+.entry .actions input[type=checkbox].star {
   background-position: -144px 0;
 }
 
-.entry .actions .star input[type=checkbox]:checked {
+.entry .actions input[type=checkbox].star:checked {
   background-position: -120px 0;
 }
 
-.entry .actions .read input[type=checkbox] {
+.entry .actions input[type=checkbox].read {
   background-position: -192px -96px;
 }
 
-.entry .actions .read input[type=checkbox]:checked {
+.entry .actions input[type=checkbox].read:checked {
   background-position: -72px -96px
 }
 
 .nothingSelected {
   text-align: center;
+}
+
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
