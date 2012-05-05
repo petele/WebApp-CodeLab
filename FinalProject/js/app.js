@@ -1,20 +1,12 @@
-var wReader = angular.module('wReader', ['wReader.filters']);
-  // config(['$locationProvider', function($locationProvider) {
-  //   $locationProvider.html5Mode(true).hashPrefix('!');
-  // }]);
+var wReader = angular.module('wReader', ['wReader.filters']).
+  config(['$locationProvider', function($locationProvider) {
+    $locationProvider.html5Mode(true).hashPrefix('!');
+  }]);
   // config(['$routeProvider', function($routeProvider) {
   //   //$routeProvider.when('/view1', {template: 'partials/partial1.html', controller: MyCtrl1});
   //   //$routeProvider.when('/view2', {template: 'partials/partial2.html', controller: MyCtrl2});
   //   $routeProvider.otherwise({redirectTo: '/'});
   // }]);
-
-// wReader.factory('myService', function() {
-//   return {
-//     selectItem: function(scope) {
-//       scope.items = [1];
-//     }
-//   };
-// });
 
 // Create or open the data store where objects are stored for offline use
 var store = new Lawnchair({name: 'entries', record: 'entry'}, function() {
@@ -52,8 +44,7 @@ function Item() {
 
 function DataController($scope, $http, $filter) {
   $scope.items = [];
-  $scope.filteredItems = [];
-  $scope.currentFilter = {};
+  $scope.allItems = [];
 
   $scope.getItemsFromDataStore = function() {
     // Get all items from the local data store.
@@ -70,6 +61,8 @@ function DataController($scope, $http, $filter) {
 
       console.log("Entries loaded from local data store:", arr.length);
 
+      $scope.allItems = $scope.items;
+
       // Load items from the server after we've loaded everything from the local
       // data store
       $scope.getItemsFromServer();
@@ -77,7 +70,6 @@ function DataController($scope, $http, $filter) {
   };
 
   $scope.getItemsFromServer = function() {
-    // URL to data feed that I plan to consume
     var feedURL = 'http://blog.chromium.org/feeds/posts/default?alt=json';
 
     var getLink = function(links, rel) {
@@ -110,16 +102,18 @@ function DataController($scope, $http, $filter) {
         item.content = entry.content.$t;
         item.short_desc = item.content.substr(0, 128) + '...';
 
-        var emItem = new Item();
-        angular.extend(emItem, item);
+        var tempItem = new Item();
+        angular.extend(tempItem, item);
 
         // Try to add the item to the data controller, if it's successfully
         //  added, we get TRUE and add the item to the local data store,
         //  otherwise it's likely already in the local data store.
-        if ($scope.addItem(emItem)) {
+        if ($scope.addItem(tempItem)) {
           store.save(item);
         }
       });
+
+      $scope.allItems = $scope.items;
     };
 
     $scope.items = [];
@@ -164,20 +158,20 @@ function DataController($scope, $http, $filter) {
   };
 
   $scope.itemCount = function() {
-    return $scope.items.length;
+    return $scope.allItems.length;
   };
 
   $scope.readCount = function() {
-    return $scope.items.filter(function(val, i) { return val.read }).length;
+    return $scope.allItems.filter(function(val, i) { return val.read }).length;
   };
 
   $scope.unreadCount = function() {
-    return $scope.items.length - $scope.readCount();
+    return $scope.allItems.length - $scope.readCount();
   };
 
   // A 'property' that returns the count of starred items
   $scope.starredCount = function() {
-    return $scope.items.filter(function(val, i) { return val.starred }).length;
+    return $scope.allItems.filter(function(val, i) { return val.starred }).length;
   };
 
   $scope.markAllRead = function() {
@@ -190,94 +184,85 @@ function DataController($scope, $http, $filter) {
   };
 
   $scope.clearFilter = function() {
-    $scope.filteredItems = $scope.items;
+    $scope.items = $scope.allItems;
   };
 
-  $scope.$watch('items', function(newVal, oldVal, scope) {
-    $scope.filterBy($scope.currentFilter.key, $scope.currentFilter.value);
-  }, true);
-
   $scope.filterBy = function(key, value) {
-    // $scope.filteredItems = $scope.items.filter(function(val, i) {
-    //   return val[key] == value;
-    // });
-$scope.currentFilter = {key: key, value: value};
-
-    $scope.filteredItems = $filter('filter')($scope.items, function(item, i) {
+    $scope.items = $filter('filter')($scope.allItems, function(item, i) {
       return item[key] == value;
     });
   };
 
   // Fetch items when the constructor is called.
-  $scope.getItemsFromServer();
+  $scope.getItemsFromDataStore();
 }
+
 DataController.$inject = ['$scope', '$http', '$filter']; // For JS compilers.
 
 
-function ItemsController($scope) { //{, $injector) {//, myService) {
-  //$injector.invoke(DataController, this, {$scope: $scope}); 
-
-  $scope.selectedItemIdx = null;
-
+function ItemsController($scope, $location) {
   // A special observer that will watch for when the 'selectedItem' is updated
   // and ensure that we scroll into a view so that the selected item is visible
   // in the summary list view.
-  $scope.$watch('selectedItemIdx', function(newVal, oldVal, scope) {
-
-    // Performing scrolling like this isn't very Angular-ly.
-    // Need the setTimeout to prevent race condition with summary being selected
-    // after selectedItemIdx has already changed.
-    window.setTimeout(function() {
-      if (newVal != null) {
+  $scope.$watch('selectedItem().index', function(newVal, oldVal, scope) {
+    // TODO: Performing scrolling like this doesn't seem very Angular-ly.
+    // Need the setTimeout to prevent race condition with item being selected.
+    if (newVal != null) {
+      window.setTimeout(function() {
         var curScrollPos = $('.summaries').scrollTop();
         var itemTop = $('.summary.active').offset().top - 60;
         $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
-      }
-    }, 0);    
+      }, 0); 
+    }   
   });
-  
+
+  $scope.selectedItem = function() {
+    for (var i = 0, item; item = $scope.$parent.items[i]; ++i) {
+      if (item.selected == true) {
+        return {item: item, index: i};
+      }
+    }
+    return {item: null, index: null};
+  };
+
   $scope.hasNext = function() {
-    if ($scope.selectedItemIdx == null) {
+    var selectedItem = $scope.selectedItem();
+    if (selectedItem.index == null) {
       return true;
     }
-    return $scope.selectedItemIdx < $scope.$parent.filteredItems.length - 1;
+    return selectedItem.index < $scope.$parent.items.length - 1;
   };
   
   $scope.hasPrev = function() {
-    if ($scope.selectedItemIdx == null) {
-      return false;
+    var selectedItem = $scope.selectedItem();
+    if (selectedItem.index == null) {
+      return true;
     }
-    return $scope.selectedItemIdx > 0;
-  };
-
-  $scope.selectedItem = function() {
-    if ($scope.selectedItemIdx == null) {
-      return null;
-    }
-    return $scope.$parent.items[$scope.selectedItemIdx];
+    return selectedItem.index > 0;
   };
 
   // Called to select an item
   $scope.selectItem = function(opt_idx) {
 
     // Unselect previous selection.
-    var selectedItem = $scope.selectedItem();
+    var selectedItem = $scope.selectedItem().item;
     if (selectedItem) {
       selectedItem.selected = false;
     }
 
-
     if (opt_idx != undefined) {
-      $scope.selectedItemIdx = opt_idx;
-      $scope.$parent.items[$scope.selectedItemIdx].selected = true;
+      selectedItem = $scope.$parent.items[opt_idx];
+      selectedItem.selected = true;
     } else {
-      $scope.selectedItemIdx = this.$index;
       this.item.selected = true;
+      selectedItem = this.item;
     }
 
     $scope.toggleRead(true);
 
     //TODO: Update the address bar
+    //$location.hash(selectedItem.item_id)
+
     //var url = location.origin + location.pathname + '';
     //var item_url = "" + item.get('item_id');
     //history.pushState(item.get('item_id'), 'title', url + item_url);
@@ -286,8 +271,9 @@ function ItemsController($scope) { //{, $injector) {//, myService) {
   // Advances to the next item.
   $scope.next = function(opt_delta) {
     var delta = opt_delta || 1;
-    $scope.selectItem(
-        $scope.selectedItemIdx != null ? $scope.selectedItemIdx + delta : 0);
+
+    var selectedItem = $scope.selectedItem();
+    $scope.selectItem(selectedItem.item != null ? selectedItem.index + delta : 0);
   };
 
   // Goes back to the previous item.
@@ -297,7 +283,7 @@ function ItemsController($scope) { //{, $injector) {//, myService) {
 
   // Toggles or sets the read state with an optional boolean
   $scope.toggleRead = function(opt_read) {
-    var selectedItem = $scope.selectedItem();
+    var selectedItem = $scope.selectedItem().item;
     var read = opt_read || !selectedItem.read;
     selectedItem.read = read;
     var key = selectedItem.item_id;
@@ -306,14 +292,15 @@ function ItemsController($scope) { //{, $injector) {//, myService) {
 
   // Toggles or sets the starred status with an optional boolean
   $scope.toggleStar = function(opt_star) {
-    var selectedItem = $scope.selectedItem();
+    var selectedItem = $scope.selectedItem().item;
     var star = opt_star || !selectedItem.starred;
     selectedItem.starred = star;
     var key = selectedItem.item_id;
     store.toggleStar(key, star);
   };
 }
-ItemsController.$inject = ['$scope'];  // For JS compilers.
+
+ItemsController.$inject = ['$scope', '$location'];  // For JS compilers.
 //ItemsController.prototype = Object.create(DataController.prototype);
 
 // Top Menu/Nav Bar
@@ -345,7 +332,7 @@ function NavBarController($scope) {//, $injector) {
     $scope.getItemsFromServer();
   };
 
-  $scope.showAll(); // Show all when page loads.
+  //$scope.showAll(); // Show all when page loads.
 }
 
 NavBarController.$inject = ['$scope'];  // For JS compilers.
@@ -429,7 +416,7 @@ function handleBodyKeyDown(e) {
 }
 
 function handlePopState(e) {
-  console.log("Pop State", e);
+  //console.log("Pop State", e);
 }
 
 document.body.addEventListener('keydown', handleBodyKeyDown, false);
