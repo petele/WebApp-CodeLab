@@ -78,7 +78,7 @@ function DataController($scope, $http, $filter) {
       //$scope.allItems = $scope.items;
 
       // Load items from the server after we've loaded everything from the local
-      // data store. Duplicate item starred/read states are preserved.
+      // data store.
       $scope.getItemsFromServer();
       
       //$scope.clearFilter(); // Show all items by default.
@@ -137,7 +137,7 @@ function DataController($scope, $http, $filter) {
     };
 
     var errorCallback = function(data, status, headers, config) {
-      //$scope.allItems = $scope.items;
+      $scope.allItems = $scope.items;
     };
 
     $http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback).error(errorCallback);
