@@ -1,7 +1,7 @@
-var wReader = angular.module('wReader', ['wReader.filters']).
-  config(['$locationProvider', function($locationProvider) {
-    $locationProvider.html5Mode(true).hashPrefix('!');
-  }]);
+var wReader = angular.module('wReader', ['wReader.filters']);
+  // config(['$locationProvider', function($locationProvider) {
+  //   $locationProvider.html5Mode(true).hashPrefix('!');
+  // }]);
   // config(['$routeProvider', function($routeProvider) {
   //   //$routeProvider.when('/view1', {template: 'partials/partial1.html', controller: MyCtrl1});
   //   //$routeProvider.when('/view2', {template: 'partials/partial2.html', controller: MyCtrl2});
@@ -141,6 +141,7 @@ function DataController($scope, $http, $filter) {
     };
 
     $http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback).error(errorCallback);
+    //$http.get(feedURL).success(successCallback).error(errorCallback);
   };
 
   // Adds an item to the controller if it's not already in the controller
@@ -204,7 +205,7 @@ function DataController($scope, $http, $filter) {
 DataController.$inject = ['$scope', '$http', '$filter']; // For JS compilers.
 
 
-function ItemsController($scope, $location) {
+function ItemsController($scope) { //{, $location) {
   // A special observer that will watch for when the 'selectedItem' is updated
   // and ensure that we scroll into a view so that the selected item is visible
   // in the summary list view.
@@ -304,7 +305,7 @@ function ItemsController($scope, $location) {
   };
 }
 
-ItemsController.$inject = ['$scope', '$location'];  // For JS compilers.
+ItemsController.$inject = ['$scope'];//, '$location'];  // For JS compilers.
 //ItemsController.prototype = Object.create(DataController.prototype);
 
 // Top Menu/Nav Bar

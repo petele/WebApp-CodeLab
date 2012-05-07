@@ -9,6 +9,7 @@
   "permissions": [
     "experimental",
     "windows",
-    "http://blog.chromium.org"
-  ]
+    "*://blog.chromium.org/feeds/*"
+  ],
+  "content_security_policy": "script-src 'self' https://blog.chromium.org; object-src 'self'"
 }
