@@ -71,7 +71,7 @@ function DataController($scope, $http, $filter) {
       // data store. Duplicate item starred/read states are preserved.
       $scope.getItemsFromServer();
       
-      $scope.clearFilter();
+      $scope.clearFilter(); // Show all items by default.
     });
   };
 
