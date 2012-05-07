@@ -8,6 +8,16 @@ var wReader = angular.module('wReader', ['wReader.filters']).
   //   $routeProvider.otherwise({redirectTo: '/'});
   // }]);
 
+// wReader.factory('itemsService', function() {
+//   var items = [];
+
+//   return {
+//     addItem: function(item) {
+//       items.push(item);
+//     }
+//   };
+// });
+
 // Create or open the data store where objects are stored for offline use
 var store = new Lawnchair({
   name: 'entries',
@@ -225,7 +235,7 @@ function ItemsController($scope, $location) {
   });
 
   $scope.selectedItem = function() {
-    for (var i = 0, item; item = $scope.$parent.items[i]; ++i) {
+    for (var i = 0, item; item = $scope.items[i]; ++i) {
       if (item.selected == true) {
         return {item: item, index: i};
       }
@@ -238,7 +248,7 @@ function ItemsController($scope, $location) {
     if (selectedItem.index == null) {
       return true;
     }
-    return selectedItem.index < $scope.$parent.items.length - 1;
+    return selectedItem.index < $scope.items.length - 1;
   };
   
   $scope.hasPrev = function() {
@@ -259,7 +269,7 @@ function ItemsController($scope, $location) {
     }
 
     if (opt_idx != undefined) {
-      selectedItem = $scope.$parent.items[opt_idx];
+      selectedItem = $scope.items[opt_idx];
       selectedItem.selected = true;
     } else {
       this.item.selected = true;
@@ -332,7 +342,7 @@ function NavBarController($scope) {//, $injector) {
 
   // Click handler for menu bar
   $scope.showRead = function() {
-    $scope.$parent.filterBy('read', true);
+    $scope.filterBy('read', true);
   };
 
   // Click handler for menu bar

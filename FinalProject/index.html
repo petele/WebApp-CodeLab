@@ -99,7 +99,7 @@
     </section>
 
     <section class="summaries">
-      <article ng-repeat="item in $parent.items" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
+      <article ng-repeat="item in items" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
         <div class="row-fluid" >
           <div class="span6 pub-name">
             {{item.pub_name}}
@@ -129,7 +129,7 @@
           <p class="post-content" ng-bind-html-unsafe="selectedItem().item.content"></p>
         </div>
       </article>
-      <div class="nothingSelected" ng-show="!$parent.items.length || !!!selectedItem().item">
+      <div class="nothingSelected" ng-show="!items.length || !!!selectedItem().item">
         <img src="img/sadpanda.png" alt="Sad Panda" title="Sad Panda">
         <p>Nothing selected.</p>
       </div>
