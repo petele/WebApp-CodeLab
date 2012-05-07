@@ -75,13 +75,13 @@ function DataController($scope, $http, $filter) {
 
       console.log("Entries loaded from local data store:", arr.length);
 
-      $scope.allItems = $scope.items;
+      //$scope.allItems = $scope.items;
 
       // Load items from the server after we've loaded everything from the local
       // data store. Duplicate item starred/read states are preserved.
       $scope.getItemsFromServer();
       
-      $scope.clearFilter(); // Show all items by default.
+      //$scope.clearFilter(); // Show all items by default.
     });
   };
 
@@ -98,6 +98,8 @@ function DataController($scope, $http, $filter) {
     };
 
     var successCallback = function(data, status, headers, config) {
+      $scope.items = [];
+
       var entries = data.feed.entry;
 
       // Use map to iterate through the items and create a new JSON object for
@@ -134,8 +136,11 @@ function DataController($scope, $http, $filter) {
       console.log('Entries loaded from server:', $scope.items.length);
     };
 
-    $scope.items = [];
-    $http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback);
+    var errorCallback = function(data, status, headers, config) {
+      //$scope.allItems = $scope.items;
+    };
+
+    $http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback).error(errorCallback);
   };
 
   // Adds an item to the controller if it's not already in the controller
@@ -148,31 +153,12 @@ function DataController($scope, $http, $filter) {
     if (exists === 0) {
       // If no results are returned, we insert the new item into the data
       // controller in order of publication date
-      var idx = $scope.binarySearch(Date.parse(item.pub_date), 0, $scope.items.length);
-      $scope.items.splice(idx, 0, item);
+      $scope.items.push(item);
       return true;
     } else {
       // It's already in the data controller, so we won't re-add it.
       return false;
     }
-  };
-
-  // Binary search implementation that finds the index where a entry
-  // should be inserted when sorting by date.
-  $scope.binarySearch = function(value, low, high) {
-    var mid, midValue;
-    if (low === high) {
-      return low;
-    }
-    mid = low + Math.floor((high - low) / 2);
-    midValue = Date.parse($scope.items[mid].pub_date);
-
-    if (value < midValue) {
-      return this.binarySearch(value, mid + 1, high);
-    } else if (value > midValue) {
-      return this.binarySearch(value, low, mid);
-    }
-    return mid;
   };
 
   $scope.itemCount = function() {
@@ -235,7 +221,7 @@ function ItemsController($scope, $location) {
   });
 
   $scope.selectedItem = function() {
-    for (var i = 0, item; item = $scope.items[i]; ++i) {
+    for (var i = 0, item; item = $scope.$parent.items[i]; ++i) {
       if (item.selected == true) {
         return {item: item, index: i};
       }
@@ -248,7 +234,7 @@ function ItemsController($scope, $location) {
     if (selectedItem.index == null) {
       return true;
     }
-    return selectedItem.index < $scope.items.length - 1;
+    return selectedItem.index < $scope.$parent.items.length - 1;
   };
   
   $scope.hasPrev = function() {
@@ -269,7 +255,7 @@ function ItemsController($scope, $location) {
     }
 
     if (opt_idx != undefined) {
-      selectedItem = $scope.items[opt_idx];
+      selectedItem = $scope.$parent.items[opt_idx];
       selectedItem.selected = true;
     } else {
       this.item.selected = true;

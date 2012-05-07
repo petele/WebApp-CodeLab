@@ -60,7 +60,7 @@
             <li class="divider-vertical"></li>
           </ul>
           <form class="navbar-search pull-left" id="navSearch">
-            <input type="text" class="search-query" placeholder="Search">
+            <input type="search" ng-model="$parent.search" class="search-query" placeholder="Search">
           </form>
           <ul class="nav pull-right">
             <!--<li><a ng-click="showSettings()"><i class="icon-cog icon-white"></i></a></li>-->
@@ -99,7 +99,7 @@
     </section>
 
     <section class="summaries">
-      <article ng-repeat="item in items" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
+      <article ng-repeat="item in items | orderBy:'-pub_date' | filter:$parent.search" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
         <div class="row-fluid" >
           <div class="span6 pub-name">
             {{item.pub_name}}
