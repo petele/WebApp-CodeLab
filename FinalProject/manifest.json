@@ -11,5 +11,15 @@
     "windows",
     "*://blog.chromium.org/feeds/*"
   ],
-  "content_security_policy": "script-src 'self' https://blog.chromium.org; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://blog.chromium.org; object-src 'self'",
+  "intents": {
+    "http://webintents.org/view": [
+      { 
+        "type": ["application/rss+xml", "application/atom+xml"],
+        "href": "/index.html",
+        "title": "wReader",
+        "disposition" : "inline"
+      }
+    ]
+  }
 }
