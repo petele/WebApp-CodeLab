@@ -1,0 +1,33 @@
+<h1 id="angular.module.ng.$filter.json">angular.module.ng.$filter.json</h1>
+<div class="angular-module-ng-$filter-json"><h2 id="Description">Description</h2>
+<div class="description"><p>Allows you to convert a JavaScript object into JSON string.</p>
+
+<p>This filter is mostly useful for debugging. When using the double curly {{value}} notation
+the binding is automatically converted to JSON.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><h3 id="In.HTML.Template.Binding">In HTML Template Binding</h3>
+<div class="in-html-template-binding"><code ng:non-bindable="">{{ json_expression | json }}</code>
+</div>
+<h3 id="In.JavaScript">In JavaScript</h3>
+<div class="in-javascript"><code ng:non-bindable="">$filter('json')(object)</code>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">object – {*} – </code>
+<p>Any JavaScript object (including arrays and primitive types) to filter.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{string}</code>
+– <p>JSON string.</p></div>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+  &lt;pre&gt;{{ {'name':'value'} | json }}&lt;/pre&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should jsonify filtered objects', function() {
+    expect(binding("{'name':'value'}")).toMatch(/\{\n  "name": ?"value"\n}/);
+  });
+</pre>
+</doc:example></div>
+</div>

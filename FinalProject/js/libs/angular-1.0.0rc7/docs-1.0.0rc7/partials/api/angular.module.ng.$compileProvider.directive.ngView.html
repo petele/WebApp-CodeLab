@@ -1,0 +1,117 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngView">angular.module.ng.$compileProvider.directive.ngView</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngview"><h2 id="Description">Description</h2>
+<div class="description"><h3>Overview</h3>
+
+<p><code>ngView</code> is a directive that complements the <a href="api/angular.module.ng.$route"><code>$route</code></a> service by
+including the rendered template of the current route into the main layout (<code>index.html</code>) file.
+Every time the current route changes, the included view changes with it according to the
+configuration of the <code>$route</code> service.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as element (see <a href="guide/ie">IE restrictions</a>)<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ng-view&gt;
+&lt;/ng-view&gt;</pre>
+</div>
+as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-view&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-view"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Directive.info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+</div>
+<div class="member event"><h2 id="Events">Events</h2>
+<ul class="events"><li><h3 id="$viewContentLoaded">$viewContentLoaded</h3>
+<div class="$viewcontentloaded"><p>Emitted every time the ngView content is reloaded.</p><div class="inline"><h4 id="Type.">Type:</h4>
+<div class="type-">emit</div>
+</div>
+<div class="inline"><h4 id="Target.">Target:</h4>
+<div class="target-">the current ngView scope</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example module="ngView">
+<pre class="doc-source">
+  &lt;script type="text/ng-template" id="examples/book.html"&gt;
+    controller: {{name}}&lt;br /&gt;
+    Book Id: {{params.bookId}}&lt;br /&gt;
+  &lt;/script&gt;
+
+  &lt;script type="text/ng-template" id="examples/chapter.html"&gt;
+    controller: {{name}}&lt;br /&gt;
+    Book Id: {{params.bookId}}&lt;br /&gt;
+    Chapter Id: {{params.chapterId}}
+  &lt;/script&gt;
+
+  &lt;script&gt;
+    angular.module('ngView', [], function($routeProvider, $locationProvider) {
+      $routeProvider.when('/Book/:bookId', {
+        template: 'examples/book.html',
+        controller: BookCntl
+      });
+      $routeProvider.when('/Book/:bookId/ch/:chapterId', {
+        template: 'examples/chapter.html',
+        controller: ChapterCntl
+      });
+
+      // configure html5 to get links working on jsfiddle
+      $locationProvider.html5Mode(true);
+    });
+
+    function MainCntl($scope, $route, $routeParams, $location) {
+      $scope.$route = $route;
+      $scope.$location = $location;
+      $scope.$routeParams = $routeParams;
+    }
+
+    function BookCntl($scope, $routeParams) {
+      $scope.name = "BookCntl";
+      $scope.params = $routeParams;
+    }
+
+    function ChapterCntl($scope, $routeParams) {
+      $scope.name = "ChapterCntl";
+      $scope.params = $routeParams;
+    }
+  &lt;/script&gt;
+
+  &lt;div ng-controller="MainCntl"&gt;
+    Choose:
+    &lt;a href="Book/Moby"&gt;Moby&lt;/a&gt; |
+    &lt;a href="Book/Moby/ch/1"&gt;Moby: Ch1&lt;/a&gt; |
+    &lt;a href="Book/Gatsby"&gt;Gatsby&lt;/a&gt; |
+    &lt;a href="Book/Gatsby/ch/4?key=value"&gt;Gatsby: Ch4&lt;/a&gt; |
+    &lt;a href="Book/Scarlet"&gt;Scarlet Letter&lt;/a&gt;&lt;br/&gt;
+
+    &lt;div ng-view&gt;&lt;/div&gt;
+    &lt;hr /&gt;
+
+    &lt;pre&gt;$location.path() = {{$location.path()}}&lt;/pre&gt;
+    &lt;pre&gt;$route.current.template = {{$route.current.template}}&lt;/pre&gt;
+    &lt;pre&gt;$route.current.params = {{$route.current.params}}&lt;/pre&gt;
+    &lt;pre&gt;$route.current.scope.name = {{$route.current.scope.name}}&lt;/pre&gt;
+    &lt;pre&gt;$routeParams = {{$routeParams}}&lt;/pre&gt;
+  &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should load and compile correct template', function() {
+    element('a:contains("Moby: Ch1")').click();
+    var content = element('.doc-example-live [ng-view]').text();
+    expect(content).toMatch(/controller\: ChapterCntl/);
+    expect(content).toMatch(/Book Id\: Moby/);
+    expect(content).toMatch(/Chapter Id\: 1/);
+
+    element('a:contains("Scarlet")').click();
+    content = element('.doc-example-live [ng-view]').text();
+    expect(content).toMatch(/controller\: BookCntl/);
+    expect(content).toMatch(/Book Id\: Scarlet/);
+  });
+</pre>
+</doc:example></div>
+</div>

@@ -1,0 +1,53 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngBindTemplate">angular.module.ng.$compileProvider.directive.ngBindTemplate</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngbindtemplate"><h2 id="Description">Description</h2>
+<div class="description"><p>The <code>ngBindTemplate</code> directive specifies that the element
+text should be replaced with the template in ngBindTemplate.
+Unlike ngBind the ngBindTemplate can contain multiple <code>{{</code> <code>}}</code>
+expressions. (This is required since some HTML elements
+can not have SPAN elements such as TITLE, or OPTION to name a few.)</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-bind-template="{string}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-bind-template: {string};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngBindTemplate – {string} – </code>
+<p>template of form
+<tt>{{</tt> <tt>expression</tt> <tt>}}</tt> to eval.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><p>Try it here: enter text in text box and watch the greeting change.</p><doc:example>
+  <pre class="doc-source">
+    &lt;script&gt;
+      function Ctrl($scope) {
+        $scope.salutation = 'Hello';
+        $scope.name = 'World';
+      }
+    &lt;/script&gt;
+    &lt;div ng-controller="Ctrl"&gt;
+     Salutation: &lt;input type="text" ng-model="salutation"&gt;&lt;br&gt;
+     Name: &lt;input type="text" ng-model="name"&gt;&lt;br&gt;
+     &lt;pre ng-bind-template="{{salutation}} {{name}}!"&gt;&lt;/pre&gt;
+    &lt;/div&gt;
+  </pre>
+  <pre class="doc-scenario">
+    it('should check ng-bind', function() {
+      expect(using('.doc-example-live').binding('salutation')).
+        toBe('Hello');
+      expect(using('.doc-example-live').binding('name')).
+        toBe('World');
+      using('.doc-example-live').input('salutation').enter('Greetings');
+      using('.doc-example-live').input('name').enter('user');
+      expect(using('.doc-example-live').binding('salutation')).
+        toBe('Greetings');
+      expect(using('.doc-example-live').binding('name')).
+        toBe('user');
+    });
+  </pre>
+</doc:example></div>
+</div>

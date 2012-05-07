@@ -1,0 +1,64 @@
+<h1 id="Developer.Guide..Templates..Filters..Creating.Angular.Filters">Developer Guide: Templates: Filters: Creating Angular Filters</h1>
+<div class="developer-guide--templates--filters--creating-angular-filters"><p>Writing your own filter is very easy: just define a JavaScript function on the <code>angular.module.ng.$filter</code>
+object.
+The framework passes in the input value as the first argument to your function. Any filter
+arguments are passed in as additional function arguments.</p>
+
+<p>You can use these variables in the function:</p>
+
+<ul>
+<li><code>this</code> — The current scope.</li>
+<li><code>this.$element</code> — The DOM element containing the binding. The <code>$element</code> variable allows the
+filter to manipulate the DOM.</li>
+</ul>
+
+<p>The following sample filter reverses a text string. In addition, it conditionally makes the
+text upper-case and assigns color.</p><doc:example module="MyReverseModule">
+<pre class="doc-source">
+&lt;script type="text/javascript"&gt;
+  angular.module('MyReverseModule', []).
+    filter('reverse', function() {
+      return function(input, uppercase) {
+        var out = "";
+        for (var i = 0; i &lt; input.length; i++) {
+          out = input.charAt(i) + out;
+        }
+        // conditional based on optional argument
+        if (uppercase) {
+          out = out.toUpperCase();
+        }
+        return out;
+      }
+    });
+
+  function Ctrl($scope) {
+    $scope.greeting = 'hello';
+  }
+&lt;/script&gt;
+
+&lt;div ng-controller="Ctrl"&gt;
+  &lt;input ng-model="greeting" type="greeting"&gt;&lt;br&gt;
+  No filter: {{greeting}}&lt;br&gt;
+  Reverse: {{greeting|reverse}}&lt;br&gt;
+  Reverse + uppercase: {{greeting|reverse:true}}&lt;br&gt;
+&lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should reverse greeting', function() {
+    expect(binding('greeting|reverse')).toEqual('olleh');
+    input('greeting').enter('ABC');
+    expect(binding('greeting|reverse')).toEqual('CBA');
+  });
+</pre>
+</doc:example><h3>Related Topics</h3>
+
+<ul>
+<li><a href="guide/dev_guide.templates.filters">Understanding Angular Filters</a></li>
+<li><a href="guide/dev_guide.compiler">Angular HTML Compiler</a></li>
+</ul>
+
+<h3>Related API</h3>
+
+<ul>
+<li><a href="api/angular.module.ng.$filter"><code>Angular Filter API</code></a></li>
+</ul></div>

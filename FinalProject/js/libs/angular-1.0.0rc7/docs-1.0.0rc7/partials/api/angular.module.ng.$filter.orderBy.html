@@ -1,0 +1,92 @@
+<h1 id="angular.module.ng.$filter.orderBy">angular.module.ng.$filter.orderBy</h1>
+<div class="angular-module-ng-$filter-orderby"><h2 id="Description">Description</h2>
+<div class="description"><p>Orders a specified <code>array</code> by the <code>expression</code> predicate.</p>
+
+<p>Note: this function is used to augment the <code>Array</code> type in Angular expressions. See
+<a href="api/angular.module.ng.$filter"><code>angular.module.ng.$filter</code></a> for more informaton about Angular arrays.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><div ng:non-bindable=""><pre class="brush: js; html-script: true;">orderBy(array, expression[, reverse]);</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">array – {Array} – </code>
+<p>The array to sort.</p></li>
+<li><code ng:non-bindable="">expression – {function(*)|string|Array.&lt;(function(*)|string)&gt;} – </code>
+<p>A predicate to be
+used by the comparator to determine the order of elements.</p>
+
+<p>Can be one of:</p>
+
+<ul>
+<li><code>function</code>: Getter function. The result of this function will be sorted using the
+<code>&lt;</code>, <code>=</code>, <code>&gt;</code> operator.</li>
+<li><code>string</code>: An Angular expression which evaluates to an object to order by, such as 'name'
+to sort by a property called 'name'. Optionally prefixed with <code>+</code> or <code>-</code> to control
+ascending or descending sort order (for example, +name or -name).</li>
+<li><code>Array</code>: An array of function or string predicates. The first predicate in the array
+is used for sorting, but when two items are equivalent, the next predicate is used.</li>
+</ul></li>
+<li><code ng:non-bindable="">reverse<i>(optional)</i> – {boolean=} – </code>
+<p>Reverse the order the array.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{Array}</code>
+– <p>Sorted copy of the source array.</p></div>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+  &lt;script&gt;
+    function Ctrl($scope) {
+      $scope.friends =
+          [{name:'John', phone:'555-1212', age:10},
+           {name:'Mary', phone:'555-9876', age:19},
+           {name:'Mike', phone:'555-4321', age:21},
+           {name:'Adam', phone:'555-5678', age:35},
+           {name:'Julie', phone:'555-8765', age:29}]
+      $scope.predicate = '-age';
+    }
+  &lt;/script&gt;
+  &lt;div ng-controller="Ctrl"&gt;
+    &lt;pre&gt;Sorting predicate = {{predicate}}; reverse = {{reverse}}&lt;/pre&gt;
+    &lt;hr/&gt;
+    [ &lt;a href="" ng-click="predicate=''"&gt;unsorted&lt;/a&gt; ]
+    &lt;table class="friend"&gt;
+      &lt;tr&gt;
+        &lt;th&gt;&lt;a href="" ng-click="predicate = 'name'; reverse=false"&gt;Name&lt;/a&gt;
+            (&lt;a href ng-click="predicate = '-name'; reverse=false"&gt;^&lt;/a&gt;)&lt;/th&gt;
+        &lt;th&gt;&lt;a href="" ng-click="predicate = 'phone'; reverse=!reverse"&gt;Phone Number&lt;/a&gt;&lt;/th&gt;
+        &lt;th&gt;&lt;a href="" ng-click="predicate = 'age'; reverse=!reverse"&gt;Age&lt;/a&gt;&lt;/th&gt;
+      &lt;tr&gt;
+      &lt;tr ng-repeat="friend in friends | orderBy:predicate:reverse"&gt;
+        &lt;td&gt;{{friend.name}}&lt;/td&gt;
+        &lt;td&gt;{{friend.phone}}&lt;/td&gt;
+        &lt;td&gt;{{friend.age}}&lt;/td&gt;
+      &lt;tr&gt;
+    &lt;/table&gt;
+  &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should be reverse ordered by aged', function() {
+    expect(binding('predicate')).toBe('-age');
+    expect(repeater('table.friend', 'friend in friends').column('friend.age')).
+      toEqual(['35', '29', '21', '19', '10']);
+    expect(repeater('table.friend', 'friend in friends').column('friend.name')).
+      toEqual(['Adam', 'Julie', 'Mike', 'Mary', 'John']);
+  });
+
+  it('should reorder the table when user selects different predicate', function() {
+    element('.doc-example-live a:contains("Name")').click();
+    expect(repeater('table.friend', 'friend in friends').column('friend.name')).
+      toEqual(['Adam', 'John', 'Julie', 'Mary', 'Mike']);
+    expect(repeater('table.friend', 'friend in friends').column('friend.age')).
+      toEqual(['35', '10', '29', '19', '21']);
+
+    element('.doc-example-live a:contains("Phone")').click();
+    expect(repeater('table.friend', 'friend in friends').column('friend.phone')).
+      toEqual(['555-9876', '555-8765', '555-5678', '555-4321', '555-1212']);
+    expect(repeater('table.friend', 'friend in friends').column('friend.name')).
+      toEqual(['Mary', 'Julie', 'Adam', 'Mike', 'John']);
+  });
+</pre>
+</doc:example></div>
+</div>

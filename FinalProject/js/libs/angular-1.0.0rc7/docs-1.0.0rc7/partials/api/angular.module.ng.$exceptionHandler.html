@@ -1,0 +1,24 @@
+<h1 id="angular.module.ng.$exceptionHandler">angular.module.ng.$exceptionHandler</h1>
+<div class="angular-module-ng-$exceptionhandler"><h2 id="Description">Description</h2>
+<div class="description"><p>Any uncaught exception in angular expressions is delegated to this service.
+The default implementation simply delegates to <code>$log.error</code> which logs it into
+the browser console.</p>
+
+<p>In unit tests, if <code>angular-mocks.js</code> is loaded, this service is overridden by
+<a href="api/angular.module.ngMock.$exceptionHandler"><code>mock $exceptionHandler</code></a></p></div>
+<h2 id="Dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="api/angular.module.ng.$log">$log</a></code>
+</li>
+</ul>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><div ng:non-bindable=""><pre class="brush: js; html-script: true;">$exceptionHandler(exception[, cause]);</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">exception – {Error} – </code>
+<p>Exception associated with the error.</p></li>
+<li><code ng:non-bindable="">cause<i>(optional)</i> – {string=} – </code>
+<p>optional information about the context in which
+the error was thrown.</p></li>
+</ul>
+</div>
+</div>

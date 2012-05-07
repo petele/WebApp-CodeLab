@@ -1,0 +1,57 @@
+<h1 id="Cookbook..Resources...Buzz">Cookbook: Resources - Buzz</h1>
+<div class="cookbook--resources---buzz"><p>External resources are URLs that provide JSON data, which are then rendered with the help of
+templates. angular has a resource factory that can be used to give names to the URLs and then
+attach behavior to them. For example you can use the
+<a href="http://code.google.com/apis/buzz/v1/getting_started.html#background-operations|">Google Buzz API</a>
+to retrieve Buzz activity and comments.</p><doc:example>
+ <pre class="doc-source">
+    &lt;script&gt;
+    BuzzController.$inject = ['$resource'];
+    function BuzzController($resource) {
+     this.userId = 'googlebuzz';
+     this.Activity = $resource(
+      'https://www.googleapis.com/buzz/v1/activities/:userId/:visibility/:activityId/:comments',
+      {alt: 'json', callback: 'JSON_CALLBACK'},
+      { get:     {method: 'JSONP', params: {visibility: '@self'}},
+        replies: {method: 'JSONP', params: {visibility: '@self', comments: '@comments'}}
+      });
+    }
+    BuzzController.prototype = {
+     fetch: function() {
+      this.activities = this.Activity.get({userId:this.userId});
+     },
+     expandReplies: function(activity) {
+      activity.replies = this.Activity.replies({userId: this.userId, activityId: activity.id});
+     }
+    };
+    &lt;/script&gt;
+    &lt;div ng-controller="BuzzController"&gt;
+     &lt;input ng-model="userId"/&gt;
+     &lt;button ng-click="fetch()"&gt;fetch&lt;/button&gt;
+     &lt;hr/&gt;
+     &lt;div class="buzz" ng-repeat="item in activities.data.items"&gt;
+      &lt;h1 style="font-size: 15px;"&gt;
+       &lt;img ng-src="{{item.actor.thumbnailUrl}}" style="max-height:30px;max-width:30px;"/&gt;
+       &lt;a ng-href="{{item.actor.profileUrl}}"&gt;{{item.actor.name}}&lt;/a&gt;
+       &lt;a href ng-click="expandReplies(item)" style="float: right;"&gt;
+        Expand replies: {{item.links.replies[0].count}}
+       &lt;/a&gt;
+      &lt;/h1&gt;
+      {{item.object.content | html}}
+      &lt;div class="reply" ng-repeat="reply in item.replies.data.items" style="margin-left: 20px;"&gt;
+       &lt;img ng-src="{{reply.actor.thumbnailUrl}}" style="max-height:30px;max-width:30px;"/&gt;
+       &lt;a ng-href="{{reply.actor.profileUrl}}"&gt;{{reply.actor.name}}&lt;/a&gt;:
+       {{reply.content | html}}
+      &lt;/div&gt;
+     &lt;/div&gt;
+    &lt;/div&gt;
+ </pre>
+ <pre class="doc-scenario">
+  xit('fetch buzz and expand', function() {
+    element(':button:contains(fetch)').click();
+    expect(repeater('div.buzz').count()).toBeGreaterThan(0);
+    element('.buzz a:contains(Expand replies):first').click();
+    expect(repeater('div.reply').count()).toBeGreaterThan(0);
+  });
+ </pre>
+</doc:example></div>

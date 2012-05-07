@@ -1,0 +1,77 @@
+<h1 id="angular.module.ng.$compileProvider.directive.input.url">angular.module.ng.$compileProvider.directive.input.url</h1>
+<div class="angular-module-ng-$compileprovider-directive-input-url"><h2 id="Description">Description</h2>
+<div class="description"><p>Text input with URL validation. Sets the <code>url</code> validation error key if the content is not a
+valid URL.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;input type="url"
+       ng-model="{string}"
+       [name="{string}"]
+       [required]
+       [ng-minlength="{number}"]
+       [ng-maxlength="{number}"]
+       [ng-pattern="{string}"]
+       [ng-change="{string}"]&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngModel – {string} – </code>
+<p>Assignable angular expression to data-bind to.</p></li>
+<li><code ng:non-bindable="">name<i>(optional)</i> – {string=} – </code>
+<p>Property name of the form under which the control is published.</p></li>
+<li><code ng:non-bindable="">required<i>(optional)</i> – {string=} – </code>
+<p>Sets <code>required</code> validation error key if the value is not entered.</p></li>
+<li><code ng:non-bindable="">ngMinlength<i>(optional)</i> – {number=} – </code>
+<p>Sets <code>minlength</code> validation error key if the value is shorter than
+minlength.</p></li>
+<li><code ng:non-bindable="">ngMaxlength<i>(optional)</i> – {number=} – </code>
+<p>Sets <code>maxlength</code> validation error key if the value is longer than
+maxlength.</p></li>
+<li><code ng:non-bindable="">ngPattern<i>(optional)</i> – {string=} – </code>
+<p>Sets <code>pattern</code> validation error key if the value does not match the
+RegExp pattern expression. Expected value is <code>/regexp/</code> for inline patterns or <code>regexp</code> for
+patterns defined as scope expressions.</p></li>
+<li><code ng:non-bindable="">ngChange<i>(optional)</i> – {string=} – </code>
+<p>Angular expression to be executed when input changes due to user
+interaction with the input element.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+ &lt;script&gt;
+   function Ctrl($scope) {
+     $scope.text = 'http://google.com';
+   }
+ &lt;/script&gt;
+ &lt;form name="myForm" ng-controller="Ctrl"&gt;
+   URL: &lt;input type="url" name="input" ng-model="text" required&gt;
+   &lt;span class="error" ng-show="myForm.input.$error.required"&gt;
+     Required!&lt;/span&gt;
+   &lt;span class="error" ng-show="myForm.input.$error.url"&gt;
+     Not valid url!&lt;/span&gt;
+   &lt;tt&gt;text = {{text}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.input.$valid = {{myForm.input.$valid}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.input.$error = {{myForm.input.$error}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.$valid = {{myForm.$valid}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.$error.required = {{!!myForm.$error.required}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.$error.url = {{!!myForm.$error.url}}&lt;/tt&gt;&lt;br/&gt;
+  &lt;/form&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should initialize to model', function() {
+    expect(binding('text')).toEqual('http://google.com');
+    expect(binding('myForm.input.$valid')).toEqual('true');
+  });
+
+  it('should be invalid if empty', function() {
+    input('text').enter('');
+    expect(binding('text')).toEqual('');
+    expect(binding('myForm.input.$valid')).toEqual('false');
+  });
+
+  it('should be invalid if not url', function() {
+    input('text').enter('xxx');
+    expect(binding('myForm.input.$valid')).toEqual('false');
+  });
+</pre>
+</doc:example></div>
+</div>

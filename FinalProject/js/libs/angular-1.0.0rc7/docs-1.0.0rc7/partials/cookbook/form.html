@@ -1,0 +1,108 @@
+<h1 id="Cookbook..Form">Cookbook: Form</h1>
+<div class="cookbook--form"><p>A web application's main purpose is to present and gather data. For this reason angular strives
+to make both of these operations trivial. This example shows off how you can build a simple form to
+allow a user to enter data.</p><doc:example>
+ <pre class="doc-source">
+  &lt;script&gt;
+    function FormController($scope) {
+      $scope.user = {
+        name: 'John Smith',
+        address:{line1: '123 Main St.', city:'Anytown', state:'AA', zip:'12345'},
+        contacts:[{type:'phone', value:'1(234) 555-1212'}]
+      };
+      $scope.state = /^\w\w$/;
+      $scope.zip = /^\d\d\d\d\d$/;
+
+      $scope.addContact = function() {
+         $scope.user.contacts.push({type:'email', value:''});
+      };
+
+      $scope.removeContact = function(contact) {
+        for (var i = 0, ii = this.user.contacts.length; i &lt; ii; i++) {
+          if (contact === this.user.contacts[i]) {
+            $scope.user.contacts.splice(i, 1);
+          }
+        }
+      };
+    }
+  &lt;/script&gt;
+  &lt;div ng-controller="FormController" class="example"&gt;
+
+    &lt;label&gt;Name:&lt;/label&gt;&lt;br&gt;
+    &lt;input type="text" ng-model="user.name" required/&gt; &lt;br&gt;&lt;br&gt;
+
+    &lt;label&gt;Address:&lt;/label&gt;&lt;br&gt;
+    &lt;input type="text" ng-model="user.address.line1" size="33" required&gt; &lt;br&gt;
+    &lt;input type="text" ng-model="user.address.city" size="12" required&gt;,
+    &lt;input type="text" ng-model="user.address.state"
+           ng-pattern="state" size="2" required&gt;
+    &lt;input type="text" ng-model="user.address.zip" size="5"
+           ng-pattern="zip" required&gt;&lt;br&gt;&lt;br&gt;
+
+    &lt;label&gt;Phone:&lt;/label&gt;
+    [ &lt;a href="" ng-click="addContact()"&gt;add&lt;/a&gt; ]
+    &lt;div ng-repeat="contact in user.contacts"&gt;
+      &lt;select ng-model="contact.type"&gt;
+        &lt;option&gt;email&lt;/option&gt;
+        &lt;option&gt;phone&lt;/option&gt;
+        &lt;option&gt;pager&lt;/option&gt;
+        &lt;option&gt;IM&lt;/option&gt;
+      &lt;/select&gt;
+      &lt;input type="text" ng-model="contact.value" required&gt;
+       [ &lt;a href="" ng-click="removeContact(contact)"&gt;X&lt;/a&gt; ]
+    &lt;/div&gt;
+    &lt;hr/&gt;
+    Debug View:
+    &lt;pre&gt;user={{user | json}}&lt;/pre&gt;
+  &lt;/div&gt;
+
+ </pre>
+ <pre class="doc-scenario">
+  it('should show debug', function() {
+    expect(binding('user')).toMatch(/John Smith/);
+  });
+  it('should add contact', function() {
+    using('.example').element('a:contains(add)').click();
+    using('.example div:last').input('contact.value').enter('you@example.org');
+    expect(binding('user')).toMatch(/\(234\) 555\-1212/);
+    expect(binding('user')).toMatch(/you@example.org/);
+  });
+
+  it('should remove contact', function() {
+    using('.example').element('a:contains(X)').click();
+    expect(binding('user')).not().toMatch(/\(234\) 555\-1212/);
+  });
+
+  it('should validate zip', function() {
+    expect(using('.example').
+      element(':input[ng\\:model="user.address.zip"]').
+      prop('className')).not().toMatch(/ng-invalid/);
+    using('.example').input('user.address.zip').enter('abc');
+    expect(using('.example').
+      element(':input[ng\\:model="user.address.zip"]').
+      prop('className')).toMatch(/ng-invalid/);
+  });
+
+  it('should validate state', function() {
+    expect(using('.example').element(':input[ng\\:model="user.address.state"]').prop('className'))
+      .not().toMatch(/ng-invalid/);
+    using('.example').input('user.address.state').enter('XXX');
+    expect(using('.example').element(':input[ng\\:model="user.address.state"]').prop('className'))
+      .toMatch(/ng-invalid/);
+  });
+ </pre>
+</doc:example><h2>Things to notice</h2>
+
+<ul>
+<li>The user data model is initialized <a href="api/angular.module.ng.$compileProvider.directive.ngController"><code>controller</code></a> and is
+available in the <a href="api/angular.module.ng.$rootScope.Scope"><code>scope</code></a> with the initial data.</li>
+<li>For debugging purposes we have included a debug view of the model to better understand what
+is going on.</li>
+<li>The <a href="api/angular.module.ng.$compileProvider.directive.input"><code>input directives</code></a> simply refer
+to the model and are data-bound.</li>
+<li>The inputs <a href="guide/dev_guide.forms">validate</a>. (Try leaving them blank or entering non digits
+in the zip field)</li>
+<li>In your application you can simply read from or write to the model and the form will be updated.</li>
+<li>By clicking the 'add' link you are adding new items into the <code>user.contacts</code> array which are then
+reflected in the view.</li>
+</ul></div>

@@ -1,0 +1,48 @@
+<h1 id="angular.module.ng.$log">angular.module.ng.$log</h1>
+<div class="angular-module-ng-$log"><h2 id="Description">Description</h2>
+<div class="description"><p>Simple service for logging. Default implementation writes the message
+into the browser's console (if present).</p>
+
+<p>The main purpose of this service is to simplify debugging and troubleshooting.</p></div>
+<h2 id="Dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="api/angular.module.ng.$window">$window</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="Methods">Methods</h2>
+<ul class="methods"><li><h3 id="error">error()</h3>
+<div class="error"><p>Write an error message</p></div>
+</li>
+<li><h3 id="info">info()</h3>
+<div class="info"><p>Write an information message</p></div>
+</li>
+<li><h3 id="log">log()</h3>
+<div class="log"><p>Write a log message</p></div>
+</li>
+<li><h3 id="warn">warn()</h3>
+<div class="warn"><p>Write a warning message</p></div>
+</li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+   &lt;script&gt;
+     function LogCtrl($log) {
+       this.$log = $log;
+       this.message = 'Hello World!';
+     }
+   &lt;/script&gt;
+   &lt;div ng-controller="LogCtrl"&gt;
+     &lt;p&gt;Reload this page with open console, enter text and hit the log button...&lt;/p&gt;
+     Message:
+     &lt;input type="text" ng-model="message"/&gt;
+     &lt;button ng-click="$log.log(message)"&gt;log&lt;/button&gt;
+     &lt;button ng-click="$log.warn(message)"&gt;warn&lt;/button&gt;
+     &lt;button ng-click="$log.info(message)"&gt;info&lt;/button&gt;
+     &lt;button ng-click="$log.error(message)"&gt;error&lt;/button&gt;
+   &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+</pre>
+</doc:example></div>
+</div>

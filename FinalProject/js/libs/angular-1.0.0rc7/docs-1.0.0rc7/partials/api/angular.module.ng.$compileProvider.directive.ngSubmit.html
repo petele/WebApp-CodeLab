@@ -1,0 +1,58 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngSubmit">angular.module.ng.$compileProvider.directive.ngSubmit</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngsubmit"><h2 id="Description">Description</h2>
+<div class="description"><p>Enables binding angular expressions to onsubmit events.</p>
+
+<p>Additionally it prevents the default action (which for form means sending the request to the
+server and reloading the current page).</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;form ng-submit="{expression}"&gt;
+   ...
+&lt;/form&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;form class="ng-submit: {expression};"&gt;
+   ...
+&lt;/form&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngSubmit – {expression} – </code>
+<p><a href="guide/dev_guide.expressions">Expression</a> to eval.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+ &lt;script&gt;
+   function Ctrl($scope) {
+     $scope.list = [];
+     $scope.text = 'hello';
+     $scope.submit = function() {
+       if (this.text) {
+         this.list.push(this.text);
+         this.text = '';
+       }
+     };
+   }
+ &lt;/script&gt;
+ &lt;form ng-submit="submit()" ng-controller="Ctrl"&gt;
+   Enter text and hit enter:
+   &lt;input type="text" ng-model="text" name="text" /&gt;
+   &lt;input type="submit" id="submit" value="Submit" /&gt;
+   &lt;pre&gt;list={{list}}&lt;/pre&gt;
+ &lt;/form&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should check ng-submit', function() {
+    expect(binding('list')).toBe('[]');
+    element('.doc-example-live #submit').click();
+    expect(binding('list')).toBe('["hello"]');
+    expect(input('text').val()).toBe('');
+  });
+  it('should ignore empty strings', function() {
+    expect(binding('list')).toBe('[]');
+    element('.doc-example-live #submit').click();
+    element('.doc-example-live #submit').click();
+    expect(binding('list')).toBe('["hello"]');
+  });
+</pre>
+</doc:example></div>
+</div>

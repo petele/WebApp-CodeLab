@@ -1,0 +1,69 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngRepeat">angular.module.ng.$compileProvider.directive.ngRepeat</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngrepeat"><h2 id="Description">Description</h2>
+<div class="description"><p>The <code>ngRepeat</code> directive instantiates a template once per item from a collection. Each template
+instance gets its own scope, where the given loop variable is set to the current collection item,
+and <code>$index</code> is set to the item index or key.</p>
+
+<p>Special properties are exposed on the local scope of each template instance, including:</p>
+
+<ul>
+<li><code>$index</code> – <code>{number}</code> – iterator offset of the repeated element (0..length-1)</li>
+<li><code>$position</code> – <code>{string}</code> – position of the repeated element in the iterator. One of:
+<ul><li><code>'first'</code>,</li>
+<li><code>'middle'</code></li>
+<li><code>'last'</code></li></ul></li>
+</ul></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-repeat="{repeat_expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-repeat: {repeat_expression};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Directive.info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+<li>This directive executes at priority level 1000.</li>
+</ul>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngRepeat – {repeat_expression} – </code>
+<p>The expression indicating how to enumerate a collection. Two
+formats are currently supported:</p>
+
+<ul>
+<li><p><code>variable in expression</code> – where variable is the user defined loop variable and <code>expression</code>
+is a scope expression giving the collection to enumerate.</p>
+
+<p>For example: <code>track in cd.tracks</code>.</p></li>
+<li><p><code>(key, value) in expression</code> – where <code>key</code> and <code>value</code> can be any user defined identifiers,
+and <code>expression</code> is the scope expression giving the collection to enumerate.</p>
+
+<p>For example: <code>(name, age) in {'adam':10, 'amalie':12}</code>.</p></li>
+</ul></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><p>This example initializes the scope to a list of names and
+then uses <code>ngRepeat</code> to display every person:</p><doc:example>
+      <pre class="doc-source">
+        &lt;div ng-init="friends = [{name:'John', age:25}, {name:'Mary', age:28}]"&gt;
+          I have {{friends.length}} friends. They are:
+          &lt;ul&gt;
+            &lt;li ng-repeat="friend in friends"&gt;
+              [{{$index + 1}}] {{friend.name}} who is {{friend.age}} years old.
+            &lt;/li&gt;
+          &lt;/ul&gt;
+        &lt;/div&gt;
+      </pre>
+      <pre class="doc-scenario">
+         it('should check ng-repeat', function() {
+           var r = using('.doc-example-live').repeater('ul li');
+           expect(r.count()).toBe(2);
+           expect(r.row(0)).toEqual(["1","John","25"]);
+           expect(r.row(1)).toEqual(["2","Mary","28"]);
+         });
+      </pre>
+    </doc:example></div>
+</div>

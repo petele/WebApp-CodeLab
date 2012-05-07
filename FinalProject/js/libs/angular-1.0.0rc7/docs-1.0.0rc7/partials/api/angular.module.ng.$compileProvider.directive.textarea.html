@@ -1,0 +1,44 @@
+<h1 id="angular.module.ng.$compileProvider.directive.textarea">angular.module.ng.$compileProvider.directive.textarea</h1>
+<div class="angular-module-ng-$compileprovider-directive-textarea"><h2 id="Description">Description</h2>
+<div class="description"><p>HTML textarea element control with angular data-binding. The data-binding and validation
+properties of this element are exactly the same as those of the
+<a href="api/angular.module.ng.$compileProvider.directive.input"><code>input element</code></a>.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY textarea
+     ngModel="{string}"
+     [name="{string}"]
+     [required]
+     [ngMinlength="{number}"]
+     [ngMaxlength="{number}"]
+     [ngPattern="{string}"]
+     [ngChange="{string}"]&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="textarea ngModel: {string}; [name: {string};] [required] [ngMinlength: {number};] [ngMaxlength: {number};] [ngPattern: {string};] [ngChange: {string};]"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngModel – {string} – </code>
+<p>Assignable angular expression to data-bind to.</p></li>
+<li><code ng:non-bindable="">name<i>(optional)</i> – {string=} – </code>
+<p>Property name of the form under which the control is published.</p></li>
+<li><code ng:non-bindable="">required<i>(optional)</i> – {string=} – </code>
+<p>Sets <code>required</code> validation error key if the value is not entered.</p></li>
+<li><code ng:non-bindable="">ngMinlength<i>(optional)</i> – {number=} – </code>
+<p>Sets <code>minlength</code> validation error key if the value is shorter than
+minlength.</p></li>
+<li><code ng:non-bindable="">ngMaxlength<i>(optional)</i> – {number=} – </code>
+<p>Sets <code>maxlength</code> validation error key if the value is longer than
+maxlength.</p></li>
+<li><code ng:non-bindable="">ngPattern<i>(optional)</i> – {string=} – </code>
+<p>Sets <code>pattern</code> validation error key if the value does not match the
+RegExp pattern expression. Expected value is <code>/regexp/</code> for inline patterns or <code>regexp</code> for
+patterns defined as scope expressions.</p></li>
+<li><code ng:non-bindable="">ngChange<i>(optional)</i> – {string=} – </code>
+<p>Angular expression to be executed when input changes due to user
+interaction with the input element.</p></li>
+</ul>
+</div>
+</div>

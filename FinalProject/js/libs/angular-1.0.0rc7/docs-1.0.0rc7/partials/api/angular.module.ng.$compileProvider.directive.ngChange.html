@@ -1,0 +1,46 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngChange">angular.module.ng.$compileProvider.directive.ngChange</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngchange"><h2 id="Description">Description</h2>
+<div class="description"><p>Evaluate given expression when user changes the input.
+The expression is not evaluated when the value change is coming from the model.</p>
+
+<p>Note, this directive requires <code>ngModel</code> to be present.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as element (see <a href="guide/ie">IE restrictions</a>)<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ng-change&gt;
+&lt;/ng-change&gt;</pre>
+</div>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+  &lt;script&gt;
+    function Controller($scope) {
+      $scope.counter = 0;
+      $scope.change = function() {
+        $scope.counter++;
+      };
+    }
+  &lt;/script&gt;
+  &lt;div ng-controller="Controller"&gt;
+    &lt;input type="checkbox" ng-model="confirmed" ng-change="change()" id="ng-change-example1" /&gt;
+    &lt;input type="checkbox" ng-model="confirmed" id="ng-change-example2" /&gt;
+    &lt;label for="ng-change-example2"&gt;Confirmed&lt;/label&gt;&lt;br /&gt;
+    debug = {{confirmed}}&lt;br /&gt;
+    counter = {{counter}}
+  &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should evaluate the expression if changing from view', function() {
+    expect(binding('counter')).toEqual('0');
+    element('#ng-change-example1').click();
+    expect(binding('counter')).toEqual('1');
+    expect(binding('confirmed')).toEqual('true');
+  });
+
+  it('should not evaluate the expression if changing from model', function() {
+    element('#ng-change-example2').click();
+    expect(binding('counter')).toEqual('0');
+    expect(binding('confirmed')).toEqual('true');
+  });
+</pre>
+</doc:example></div>
+</div>

@@ -1,0 +1,51 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngList">angular.module.ng.$compileProvider.directive.ngList</h1>
+<div class="angular-module-ng-$compileprovider-directive-nglist"><h2 id="Description">Description</h2>
+<div class="description"><p>Text input that converts between comma-seperated string into an array of strings.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;input ng-list="{string}"&gt;
+   ...
+&lt;/input&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;input class="ng-list: {string};"&gt;
+   ...
+&lt;/input&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngList<i>(optional)</i> – {string=} – </code>
+<p>optional delimiter that should be used to split the value. If
+specified in form <code>/something/</code> then the value will be converted into a regular expression.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+ &lt;script&gt;
+   function Ctrl($scope) {
+     $scope.names = ['igor', 'misko', 'vojta'];
+   }
+ &lt;/script&gt;
+ &lt;form name="myForm" ng-controller="Ctrl"&gt;
+   List: &lt;input name="namesInput" ng-model="names" ng-list required&gt;
+   &lt;span class="error" ng-show="myForm.list.$error.required"&gt;
+     Required!&lt;/span&gt;
+   &lt;tt&gt;names = {{names}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.namesInput.$valid = {{myForm.namesInput.$valid}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.namesInput.$error = {{myForm.namesInput.$error}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.$valid = {{myForm.$valid}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.$error.required = {{!!myForm.$error.required}}&lt;/tt&gt;&lt;br/&gt;
+  &lt;/form&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should initialize to model', function() {
+    expect(binding('names')).toEqual('["igor","misko","vojta"]');
+    expect(binding('myForm.namesInput.$valid')).toEqual('true');
+  });
+
+  it('should be invalid if empty', function() {
+    input('names').enter('');
+    expect(binding('names')).toEqual('[]');
+    expect(binding('myForm.namesInput.$valid')).toEqual('false');
+  });
+</pre>
+</doc:example></div>
+</div>

@@ -1,0 +1,93 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngInclude">angular.module.ng.$compileProvider.directive.ngInclude</h1>
+<div class="angular-module-ng-$compileprovider-directive-nginclude"><h2 id="Description">Description</h2>
+<div class="description"><p>Fetches, compiles and includes an external HTML fragment.</p>
+
+<p>Keep in mind that Same Origin Policy applies to included resources
+(e.g. ngInclude won't work for cross-domain requests on all browsers and for
+ file:// access on some browsers).</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as element (see <a href="guide/ie">IE restrictions</a>)<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ng-include
+       src="{string}"
+       [onload="{string}"]
+       [autoscroll="{string}"]&gt;
+&lt;/ng-include&gt;</pre>
+</div>
+as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-include="{string}"
+     [onload="{string}"]
+     [autoscroll="{string}"]&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-include: {string}; [onload: {string};] [autoscroll: {string};]"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Directive.info">Directive info</h3>
+<div class="directive-info"><ul><li>This directive creates new scope.</li>
+</ul>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngInclude|src – {string} – </code>
+<p>angular expression evaluating to URL. If the source is a string constant,
+make sure you wrap it in quotes, e.g. <code>src="'myPartialTemplate.html'"</code>.</p></li>
+<li><code ng:non-bindable="">onload<i>(optional)</i> – {string=} – </code>
+<p>Expression to evaluate when a new partial is loaded.</p></li>
+<li><code ng:non-bindable="">autoscroll<i>(optional)</i> – {string=} – </code>
+<p>Whether <code>ngInclude</code> should call <a href="api/angular.module.ng.$anchorScroll"><code>$anchorScroll</code></a> to scroll the viewport after the content is loaded.</p>
+
+<ul>
+<li>If the attribute is not set, disable scrolling.</li>
+<li>If the attribute is set without value, enable scrolling.</li>
+<li>Otherwise enable scrolling only if the expression evaluates to truthy value.</li>
+</ul></li>
+</ul>
+</div>
+<div class="member event"><h2 id="Events">Events</h2>
+<ul class="events"><li><h3 id="$includeContentLoaded">$includeContentLoaded</h3>
+<div class="$includecontentloaded"><p>Emitted every time the ngInclude content is reloaded.</p><div class="inline"><h4 id="Type.">Type:</h4>
+<div class="type-">emit</div>
+</div>
+<div class="inline"><h4 id="Target.">Target:</h4>
+<div class="target-">the current ngInclude scope</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source" jsfiddle="false">
+ &lt;script&gt;
+   function Ctrl($scope) {
+     $scope.templates =
+       [ { name: 'template1.html', url: 'examples/ng-include/template1.html'}
+       , { name: 'template2.html', url: 'examples/ng-include/template2.html'} ];
+     $scope.template = $scope.templates[0];
+   }
+ &lt;/script&gt;
+ &lt;div ng-controller="Ctrl"&gt;
+   &lt;select ng-model="template" ng-options="t.name for t in templates"&gt;
+    &lt;option value=""&gt;(blank)&lt;/option&gt;
+   &lt;/select&gt;
+   url of the template: &lt;tt&gt;&lt;a href="{{template.url}}"&gt;{{template.url}}&lt;/a&gt;&lt;/tt&gt;
+   &lt;hr/&gt;
+   &lt;div ng-include src="template.url"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should load template1.html', function() {
+   expect(element('.doc-example-live [ng-include]').text()).
+     toBe('Content of template1.html\n');
+  });
+  it('should load template2.html', function() {
+   select('template').option('1');
+   expect(element('.doc-example-live [ng-include]').text()).
+     toBe('Content of template2.html\n');
+  });
+  it('should change to blank', function() {
+   select('template').option('');
+   expect(element('.doc-example-live [ng-include]').text()).toEqual('');
+  });
+</pre>
+</doc:example></div>
+</div>

@@ -1,0 +1,84 @@
+<h1 id="angular.module.ngSanitize.filter.linky">angular.module.ngSanitize.filter.linky</h1>
+<div class="angular-module-ngsanitize-filter-linky"><h2 id="Description">Description</h2>
+<div class="description"><p>Finds links in text input and turns them into html links. Supports http/https/ftp/mailto and
+plain email address links.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><h3 id="In.HTML.Template.Binding">In HTML Template Binding</h3>
+<div class="in-html-template-binding"><code ng:non-bindable="">{{ linky_expression | linky }}</code>
+</div>
+<h3 id="In.JavaScript">In JavaScript</h3>
+<div class="in-javascript"><code ng:non-bindable="">$filter('linky')(text)</code>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">text – {string} – </code>
+<p>Input text.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{string}</code>
+– <p>Html-linkified text.</p></div>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example module="ngSanitize">
+<pre class="doc-source">
+  &lt;script&gt;
+    function Ctrl($scope) {
+      $scope.snippet =
+        'Pretty text with some links:\n'+
+        'http://angularjs.org/,\n'+
+        'mailto:us@somewhere.org,\n'+
+        'another@somewhere.org,\n'+
+        'and one more: ftp://127.0.0.1/.';
+    }
+  &lt;/script&gt;
+  &lt;div ng-controller="Ctrl"&gt;
+  Snippet: &lt;textarea ng-model="snippet" cols="60" rows="3"&gt;&lt;/textarea&gt;
+  &lt;table&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Filter&lt;/td&gt;
+      &lt;td&gt;Source&lt;/td&gt;
+      &lt;td&gt;Rendered&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr id="linky-filter"&gt;
+      &lt;td&gt;linky filter&lt;/td&gt;
+      &lt;td&gt;
+        &lt;pre&gt;&amp;lt;div ng-bind-html="snippet | linky"&amp;gt;&lt;br&gt;&amp;lt;/div&amp;gt;&lt;/pre&gt;
+      &lt;/td&gt;
+      &lt;td&gt;
+        &lt;div ng-bind-html="snippet | linky"&gt;&lt;/div&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr id="escaped-html"&gt;
+      &lt;td&gt;no filter&lt;/td&gt;
+      &lt;td&gt;&lt;pre&gt;&amp;lt;div ng-bind="snippet"&amp;gt;&lt;br&gt;&amp;lt;/div&amp;gt;&lt;/pre&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;div ng-bind="snippet"&gt;&lt;/div&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should linkify the snippet with urls', function() {
+    expect(using('#linky-filter').binding('snippet | linky')).
+      toBe('Pretty text with some links:&amp;#10;' +
+           '&lt;a href="http://angularjs.org/"&gt;http://angularjs.org/&lt;/a&gt;,&amp;#10;' +
+           '&lt;a href="mailto:us@somewhere.org"&gt;us@somewhere.org&lt;/a&gt;,&amp;#10;' +
+           '&lt;a href="mailto:another@somewhere.org"&gt;another@somewhere.org&lt;/a&gt;,&amp;#10;' +
+           'and one more: &lt;a href="ftp://127.0.0.1/"&gt;ftp://127.0.0.1/&lt;/a&gt;.');
+  });
+
+  it ('should not linkify snippet without the linky filter', function() {
+    expect(using('#escaped-html').binding('snippet')).
+      toBe("Pretty text with some links:\n" +
+           "http://angularjs.org/,\n" +
+           "mailto:us@somewhere.org,\n" +
+           "another@somewhere.org,\n" +
+           "and one more: ftp://127.0.0.1/.");
+  });
+
+  it('should update', function() {
+    input('snippet').enter('new http://link.');
+    expect(using('#linky-filter').binding('snippet | linky')).
+      toBe('new &lt;a href="http://link"&gt;http://link&lt;/a&gt;.');
+    expect(using('#escaped-html').binding('snippet')).toBe('new http://link.');
+  });
+</pre>
+</doc:example></div>
+</div>

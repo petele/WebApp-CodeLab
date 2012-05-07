@@ -1,0 +1,88 @@
+<h1 id="angular.module.ngSanitize.$sanitize">angular.module.ngSanitize.$sanitize</h1>
+<div class="angular-module-ngsanitize-$sanitize"><h2 id="Description">Description</h2>
+<div class="description"><p>The input is sanitized by parsing the html into tokens. All safe tokens (from a whitelist) are
+then serialized back to properly escaped html string. This means that no unsafe input can make
+it into the returned string, however, since our parser is more strict than a typical browser
+parser, it's possible that some obscure input, which would be recognized as valid HTML by a
+browser, won't make it through the sanitizer.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage"><div ng:non-bindable=""><pre class="brush: js; html-script: true;">$sanitize(html);</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">html – {string} – </code>
+<p>Html input.</p></li>
+</ul>
+<h3 id="Returns">Returns</h3>
+<div class="returns"><code ng:non-bindable="">{string}</code>
+– <p>Sanitized html.</p></div>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example module="ngSanitize">
+<pre class="doc-source">
+  &lt;script&gt;
+    function Ctrl($scope) {
+      $scope.snippet =
+        '&lt;p style="color:blue"&gt;an html\n' +
+        '&lt;em onmouseover="this.textContent=\'PWN3D!\'"&gt;click here&lt;/em&gt;\n' +
+        'snippet&lt;/p&gt;';
+    }
+  &lt;/script&gt;
+  &lt;div ng-controller="Ctrl"&gt;
+     Snippet: &lt;textarea ng-model="snippet" cols="60" rows="3"&gt;&lt;/textarea&gt;
+      &lt;table&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Filter&lt;/td&gt;
+          &lt;td&gt;Source&lt;/td&gt;
+          &lt;td&gt;Rendered&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr id="html-filter"&gt;
+          &lt;td&gt;html filter&lt;/td&gt;
+          &lt;td&gt;
+            &lt;pre&gt;&amp;lt;div ng-bind-html="snippet"&amp;gt;&lt;br/&gt;&amp;lt;/div&amp;gt;&lt;/pre&gt;
+          &lt;/td&gt;
+          &lt;td&gt;
+            &lt;div ng-bind-html="snippet"&gt;&lt;/div&gt;
+          &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr id="escaped-html"&gt;
+          &lt;td&gt;no filter&lt;/td&gt;
+          &lt;td&gt;&lt;pre&gt;&amp;lt;div ng-bind="snippet"&amp;gt;&lt;br/&gt;&amp;lt;/div&amp;gt;&lt;/pre&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;div ng-bind="snippet"&gt;&lt;/div&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr id="html-unsafe-filter"&gt;
+          &lt;td&gt;unsafe html filter&lt;/td&gt;
+          &lt;td&gt;&lt;pre&gt;&amp;lt;div ng-bind-html-unsafe="snippet"&amp;gt;&lt;br/&gt;&amp;lt;/div&amp;gt;&lt;/pre&gt;&lt;/td&gt;
+          &lt;td&gt;&lt;div ng-bind-html-unsafe="snippet"&gt;&lt;/div&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should sanitize the html snippet ', function() {
+    expect(using('#html-filter').element('div').html()).
+      toBe('&lt;p&gt;an html\n&lt;em&gt;click here&lt;/em&gt;\nsnippet&lt;/p&gt;');
+  });
+
+  it('should escape snippet without any filter', function() {
+    expect(using('#escaped-html').element('div').html()).
+      toBe("&amp;lt;p style=\"color:blue\"&amp;gt;an html\n" +
+           "&amp;lt;em onmouseover=\"this.textContent='PWN3D!'\"&amp;gt;click here&amp;lt;/em&amp;gt;\n" +
+           "snippet&amp;lt;/p&amp;gt;");
+  });
+
+  it('should inline raw snippet if filtered as unsafe', function() {
+    expect(using('#html-unsafe-filter').element("div").html()).
+      toBe("&lt;p style=\"color:blue\"&gt;an html\n" +
+           "&lt;em onmouseover=\"this.textContent='PWN3D!'\"&gt;click here&lt;/em&gt;\n" +
+           "snippet&lt;/p&gt;");
+  });
+
+  it('should update', function() {
+    input('snippet').enter('new &lt;b&gt;text&lt;/b&gt;');
+    expect(using('#html-filter').binding('snippet')).toBe('new &lt;b&gt;text&lt;/b&gt;');
+    expect(using('#escaped-html').element('div').html()).toBe("new &amp;lt;b&amp;gt;text&amp;lt;/b&amp;gt;");
+    expect(using('#html-unsafe-filter').binding("snippet")).toBe('new &lt;b&gt;text&lt;/b&gt;');
+  });
+</pre>
+</doc:example></div>
+</div>

@@ -1,0 +1,109 @@
+<h1 id="angular.module.ng.$compileProvider.directive.input">angular.module.ng.$compileProvider.directive.input</h1>
+<div class="angular-module-ng-$compileprovider-directive-input"><h2 id="Description">Description</h2>
+<div class="description"><p>HTML input element control with angular data-binding. Input control follows HTML5 input types
+and polyfills the HTML5 validation behavior for older browsers.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as element (see <a href="guide/ie">IE restrictions</a>)<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;input
+       ngModel="{string}"
+       [name="{string}"]
+       [required]
+       [ngMinlength="{number}"]
+       [ngMaxlength="{number}"]
+       [ngPattern="{string}"]
+       [ngChange="{string}"]&gt;
+&lt;/input&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngModel – {string} – </code>
+<p>Assignable angular expression to data-bind to.</p></li>
+<li><code ng:non-bindable="">name<i>(optional)</i> – {string=} – </code>
+<p>Property name of the form under which the control is published.</p></li>
+<li><code ng:non-bindable="">required<i>(optional)</i> – {string=} – </code>
+<p>Sets <code>required</code> validation error key if the value is not entered.</p></li>
+<li><code ng:non-bindable="">ngMinlength<i>(optional)</i> – {number=} – </code>
+<p>Sets <code>minlength</code> validation error key if the value is shorter than
+minlength.</p></li>
+<li><code ng:non-bindable="">ngMaxlength<i>(optional)</i> – {number=} – </code>
+<p>Sets <code>maxlength</code> validation error key if the value is longer than
+maxlength.</p></li>
+<li><code ng:non-bindable="">ngPattern<i>(optional)</i> – {string=} – </code>
+<p>Sets <code>pattern</code> validation error key if the value does not match the
+RegExp pattern expression. Expected value is <code>/regexp/</code> for inline patterns or <code>regexp</code> for
+patterns defined as scope expressions.</p></li>
+<li><code ng:non-bindable="">ngChange<i>(optional)</i> – {string=} – </code>
+<p>Angular expression to be executed when input changes due to user
+interaction with the input element.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+ &lt;script&gt;
+   function Ctrl($scope) {
+     $scope.user = {name: 'guest', last: 'visitor'};
+   }
+ &lt;/script&gt;
+ &lt;div ng-controller="Ctrl"&gt;
+   &lt;form name="myForm"&gt;
+     User name: &lt;input type="text" name="userName" ng-model="user.name" required&gt;
+     &lt;span class="error" ng-show="myForm.userName.$error.required"&gt;
+       Required!&lt;/span&gt;&lt;br&gt;
+     Last name: &lt;input type="text" name="lastName" ng-model="user.last"
+       ng-minlength="3" ng-maxlength="10"&gt;
+     &lt;span class="error" ng-show="myForm.lastName.$error.minlength"&gt;
+       Too short!&lt;/span&gt;
+     &lt;span class="error" ng-show="myForm.lastName.$error.maxlength"&gt;
+       Too long!&lt;/span&gt;&lt;br&gt;
+   &lt;/form&gt;
+   &lt;hr&gt;
+   &lt;tt&gt;user = {{user}}&lt;/tt&gt;&lt;br/&gt;
+   &lt;tt&gt;myForm.userName.$valid = {{myForm.userName.$valid}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.userName.$error = {{myForm.userName.$error}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.lastName.$valid = {{myForm.lastName.$valid}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.userName.$error = {{myForm.lastName.$error}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.$valid = {{myForm.$valid}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.$error.required = {{!!myForm.$error.required}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.$error.minlength = {{!!myForm.$error.minlength}}&lt;/tt&gt;&lt;br&gt;
+   &lt;tt&gt;myForm.$error.maxlength = {{!!myForm.$error.maxlength}}&lt;/tt&gt;&lt;br&gt;
+ &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should initialize to model', function() {
+    expect(binding('user')).toEqual('{"name":"guest","last":"visitor"}');
+    expect(binding('myForm.userName.$valid')).toEqual('true');
+    expect(binding('myForm.$valid')).toEqual('true');
+  });
+
+  it('should be invalid if empty when required', function() {
+    input('user.name').enter('');
+    expect(binding('user')).toEqual('{"last":"visitor"}');
+    expect(binding('myForm.userName.$valid')).toEqual('false');
+    expect(binding('myForm.$valid')).toEqual('false');
+  });
+
+  it('should be valid if empty when min length is set', function() {
+    input('user.last').enter('');
+    expect(binding('user')).toEqual('{"name":"guest","last":""}');
+    expect(binding('myForm.lastName.$valid')).toEqual('true');
+    expect(binding('myForm.$valid')).toEqual('true');
+  });
+
+  it('should be invalid if less than required min length', function() {
+    input('user.last').enter('xx');
+    expect(binding('user')).toEqual('{"name":"guest"}');
+    expect(binding('myForm.lastName.$valid')).toEqual('false');
+    expect(binding('myForm.lastName.$error')).toMatch(/minlength/);
+    expect(binding('myForm.$valid')).toEqual('false');
+  });
+
+  it('should be invalid if longer than max length', function() {
+    input('user.last').enter('some ridiculously long name');
+    expect(binding('user'))
+      .toEqual('{"name":"guest"}');
+    expect(binding('myForm.lastName.$valid')).toEqual('false');
+    expect(binding('myForm.lastName.$error')).toMatch(/maxlength/);
+    expect(binding('myForm.$valid')).toEqual('false');
+  });
+</pre>
+</doc:example></div>
+</div>

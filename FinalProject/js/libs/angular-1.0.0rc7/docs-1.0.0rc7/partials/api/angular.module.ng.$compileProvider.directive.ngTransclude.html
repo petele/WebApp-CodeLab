@@ -1,0 +1,52 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngTransclude">angular.module.ng.$compileProvider.directive.ngTransclude</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngtransclude"><h2 id="Description">Description</h2>
+<div class="description"><p>Insert the transcluded DOM here.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-transclude&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-transclude"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example module="transclude">
+<pre class="doc-source">
+  &lt;script&gt;
+    function Ctrl($scope) {
+      $scope.title = 'Lorem Ipsum';
+      $scope.text = 'Neque porro quisquam est qui dolorem ipsum quia dolor...';
+    }
+
+    angular.module('transclude', [])
+     .directive('pane', function(){
+        return {
+          restrict: 'E',
+          transclude: true,
+          scope: 'isolate',
+          locals: { title:'bind' },
+          template: '&lt;div style="border: 1px solid black;"&gt;' +
+                      '&lt;div style="background-color: gray"&gt;{{title}}&lt;/div&gt;' +
+                      '&lt;div ng-transclude&gt;&lt;/div&gt;' +
+                    '&lt;/div&gt;'
+        };
+    });
+  &lt;/script&gt;
+  &lt;div ng-controller="Ctrl"&gt;
+    &lt;input ng-model="title"&gt;&lt;br&gt;
+    &lt;textarea ng-model="text"&gt;&lt;/textarea&gt; &lt;br/&gt;
+    &lt;pane title="{{title}}"&gt;{{text}}&lt;/pane&gt;
+  &lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+   it('should have transcluded', function() {
+     input('title').enter('TITLE');
+     input('text').enter('TEXT');
+     expect(binding('title')).toEqual('TITLE');
+     expect(binding('text')).toEqual('TEXT');
+   });
+</pre>
+</doc:example></div>
+</div>

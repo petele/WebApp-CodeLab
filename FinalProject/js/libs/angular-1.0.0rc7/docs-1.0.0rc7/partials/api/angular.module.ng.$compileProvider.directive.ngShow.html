@@ -1,0 +1,39 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngShow">angular.module.ng.$compileProvider.directive.ngShow</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngshow"><h2 id="Description">Description</h2>
+<div class="description"><p>The <code>ngShow</code> and <code>ngHide</code> directives show or hide a portion of the DOM tree (HTML)
+conditionally.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-show="{expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-show: {expression};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngShow – {expression} – </code>
+<p>If the <a href="guide/dev_guide.expressions">expression</a> is truthy
+then the element is shown or hidden respectively.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+   Click me: &lt;input type="checkbox" ng-model="checked"&gt;&lt;br/&gt;
+   Show: &lt;span ng-show="checked"&gt;I show up when your checkbox is checked.&lt;/span&gt; &lt;br/&gt;
+   Hide: &lt;span ng-hide="checked"&gt;I hide when your checkbox is checked.&lt;/span&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should check ng-show / ng-hide', function() {
+    expect(element('.doc-example-live span:first:hidden').count()).toEqual(1);
+    expect(element('.doc-example-live span:last:visible').count()).toEqual(1);
+
+    input('checked').check();
+
+    expect(element('.doc-example-live span:first:visible').count()).toEqual(1);
+    expect(element('.doc-example-live span:last:hidden').count()).toEqual(1);
+  });
+</pre>
+</doc:example></div>
+</div>

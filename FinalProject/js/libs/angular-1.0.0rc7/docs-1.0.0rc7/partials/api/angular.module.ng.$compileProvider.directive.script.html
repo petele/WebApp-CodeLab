@@ -1,0 +1,32 @@
+<h1 id="angular.module.ng.$compileProvider.directive.script">angular.module.ng.$compileProvider.directive.script</h1>
+<div class="angular-module-ng-$compileprovider-directive-script"><h2 id="Description">Description</h2>
+<div class="description"><p>Load content of a script tag, with type <code>text/ng-template</code>, into <code>$templateCache</code>, so that the
+template can be used by <code>ngInclude</code>, <code>ngView</code> or directive templates.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as element (see <a href="guide/ie">IE restrictions</a>)<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;script
+       type="text/ng-template"&gt;
+&lt;/script&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">type – {'text/ng-template'} – </code>
+<p>must be set to <code>'text/ng-template'</code></p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+  &lt;script type="text/ng-template" id="/tpl.html"&gt;
+    Content of the template.
+  &lt;/script&gt;
+
+  &lt;a ng-click="currentTpl='/tpl.html'" id="tpl-link"&gt;Load inlined template&lt;/a&gt;
+  &lt;div id="tpl-content" ng-include src="currentTpl"&gt;&lt;/div&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should load template defined inside script tag', function() {
+    element('#tpl-link').click();
+    expect(element('#tpl-content').text()).toMatch(/Content of the template/);
+  });
+</pre>
+</doc:example></div>
+</div>

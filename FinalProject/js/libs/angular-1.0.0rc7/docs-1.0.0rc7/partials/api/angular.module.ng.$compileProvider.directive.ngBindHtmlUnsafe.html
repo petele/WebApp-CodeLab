@@ -1,0 +1,23 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngBindHtmlUnsafe">angular.module.ng.$compileProvider.directive.ngBindHtmlUnsafe</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngbindhtmlunsafe"><h2 id="Description">Description</h2>
+<div class="description"><p>Creates a binding that will innerHTML the result of evaluating the <code>expression</code> into the current
+element. <em>The innerHTML-ed content will not be sanitized!</em> You should use this directive only if
+<a href="api/angular.module.ngSanitize.directive.ngBindHtml"><code>ngBindHtml</code></a> directive is too
+restrictive and when you absolutely trust the source of the content you are binding to.</p>
+
+<p>See <a href="api/angular.module.ngSanitize.$sanitize"><code>$sanitize</code></a> docs for examples.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-bind-html-unsafe="{expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-bind-html-unsafe: {expression};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngBindHtmlUnsafe – {expression} – </code>
+<p><a href="guide/dev_guide.expressions">Expression</a> to evaluate.</p></li>
+</ul>
+</div>
+</div>

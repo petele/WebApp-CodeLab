@@ -1,0 +1,166 @@
+<!doctype html>
+<html xmlns:ng="http://angularjs.org/"
+      xmlns:doc="http://docs.angularjs.org/"
+      id="ng:app" ng:app="ngdocs"
+      ng:controller="DocsController"
+      manifest="/build/docs/appcache.manifest">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="fragment" content="!">
+  <title ng:bind-template="AngularJS: {{partialTitle | title}}">AngularJS</title>
+  <script type="text/javascript">
+    // dynamically add base tag as well as css and javascript files.
+    // we can't add css/js the usual way, because some browsers (FF) eagerly prefetch resources
+    // before the base attribute is added, causing 404 and terribly slow loading of the docs app.
+    (function() {
+      var indexFile = (location.pathname.match(/\/(index[^\.]*\.html)/) || ['', ''])[1],
+          rUrl = /(#!\/|api|guide|misc|tutorial|cookbook|index[^\.]*\.html).*$/,
+          baseUrl = location.href.replace(rUrl, indexFile),
+          jQuery = /index-jq[^\.]*\.html$/.test(baseUrl),
+          debug = /index[^\.]*-debug\.html$/.test(baseUrl),
+          headEl = document.getElementsByTagName('head')[0],
+          sync = true;
+
+      addTag('base', {href: baseUrl});
+      addTag('link', {rel: 'stylesheet', href: 'docs-combined.css', type: 'text/css'});
+      addTag('link', {rel: 'stylesheet', href: 'syntaxhighlighter/syntaxhighlighter-combined.css',
+                      type: 'text/css'});
+      addTag('script', {src: 'syntaxhighlighter/syntaxhighlighter-combined.js'}, sync);
+      if (jQuery) addTag('script', {src: debug ? 'jquery.js' : 'jquery.min.js'});
+      addTag('script', {src: path('angular-1.0.0rc7.js')}, sync);
+      addTag('script', {src: path('angular-resource-1.0.0rc7.js') }, sync);
+      addTag('script', {src: path('angular-cookies-1.0.0rc7.js') }, sync);
+      addTag('script', {src: path('angular-sanitize-1.0.0rc7.js') }, sync);
+      addTag('script', {src: 'docs-combined.js'}, sync);
+      addTag('script', {src: 'docs-keywords.js'}, sync);
+
+      function path(name) {
+        return '../' + name.replace(/\.js$/, debug ? '.js' : '.min.js');
+      }
+
+      function addTag(name, attributes, sync) {
+        var el = document.createElement(name),
+            attrName;
+
+        for (attrName in attributes) {
+          el.setAttribute(attrName, attributes[attrName]);
+        }
+
+        sync ? document.write(outerHTML(el)) : headEl.appendChild(el);
+      }
+
+      function outerHTML(node){
+        // if IE, Chrome take the internal method otherwise build one
+        return node.outerHTML || (
+            function(n){
+                var div = document.createElement('div'), h;
+                div.appendChild(n);
+                h = div.innerHTML;
+                div = null;
+                return h;
+            })(node);
+      }
+    })();
+
+
+    // force page reload when new update is available
+    window.applicationCache && window.applicationCache.addEventListener('updateready', function(e) {
+      if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+        window.applicationCache.swapCache();
+        window.location.reload();
+      }
+    }, false);
+
+
+    // GA asynchronous tracker
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-8594346-3']);
+    _gaq.push(['_setDomainName', '.angularjs.org']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="container">
+
+    <!--[if lt IE 9]>
+      <div id="oldIePrompt">
+        You are using an old version of Internet Explorer.
+        For better and safer browsing experience please <a href="http://www.microsoft.com/IE9">upgrade IE</a>
+        or install <a href="http://google.com/chrome">Google Chrome browser</a>.
+      </div>
+    <![endif]-->
+
+    <ul id="navbar">
+      <li><a href="http://angularjs.org/">AngularJS</a></li>
+      <li><a href="misc/started" ng:class="selectedSection('misc')">Getting Started</a></li>
+      <li><a href="tutorial" ng:class="selectedSection('tutorial')">Tutorial</a></li>
+      <li><a href="api" ng:class="selectedSection('api')">API Reference</a></li>
+      <li><a href="cookbook" ng:class="selectedSection('cookbook')">Examples</a></li>
+      <li><a href="guide" ng:class="selectedSection('guide')">Developer Guide</a></li>
+    </ul>
+
+    <div id="sidebar">
+      <input type="text" ng:model="search" id="search-box" placeholder="search the docs"
+             tabindex="1" accesskey="s">
+
+      <ul id="content-list" ng:class="sectionId" ng:cloak>
+        <li ng:repeat="page in pages | filter:search" ng:class="getClass(page)">
+          <a href="{{getUrl(page)}}" ng:class="selectedPartial(page)"
+             ng:bind="page.shortName"
+             tabindex="2"></a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="loading" ng:show="loading">Loading...</div>
+
+
+    <div class="content-panel">
+      <h2 ng:bind="partialTitle | title"></h2>
+      <ng:include id="content" class="content-panel-content" autoscroll
+                  src="getCurrentPartial()" onload="afterPartialLoaded()"></ng:include>
+    </div>
+
+    <div id="disqus" class="content-panel">
+      <h2>Discussion</h2>
+      <div id="disqus_thread" class="content-panel-content"></div>
+    </div>
+
+    <div id="footer" ng:cloak>
+      <a id="version"
+         ng:href="https://github.com/angular/angular.js/blob/master/CHANGELOG.md#{{versionNumber}}"
+         ng:bind-template="v{{version}}">
+      </a>
+      <!-- TODO(i): enable
+      <a ng:hide="offlineEnabled" ng:click ="subpage = true">(enable offline support)</a>
+      <span ng:show="offlineEnabled">(offline support enabled)</span>
+      -->
+      <span id="copyright">© 2010-2012 AngularJS</span>
+    </div>
+  </div>
+
+  <div id="fader" ng:show="subpage" style="display: none"></div>
+  <div id="subpage" ng:show="subpage" style="display: none">
+    <div>
+      <h2>Would you like full offline support for this AngularJS Docs App?</h2>
+      <a ng:click="subpage=false">&#10005;</a>
+      <p>
+        If you want to be able to access the entire AngularJS documentation offline, click the
+        button below. This will reload the current page and trigger background downloads of all the
+        necessary files (approximately 3.5MB). The next time you load the docs, the browser will
+        use these cached files.
+        <br><br>
+        This feature is supported on all modern browsers, except for IE9 which lacks application
+        cache support.
+      </p>
+      <button id="cacheButton" ng:click="enableOffline()">Let me have them all!</button>
+    </div>
+  </div>
+</body>
+</html>

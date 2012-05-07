@@ -1,0 +1,39 @@
+<h1 id="angular.module.ng.$compileProvider.directive.ngStyle">angular.module.ng.$compileProvider.directive.ngStyle</h1>
+<div class="angular-module-ng-$compileprovider-directive-ngstyle"><h2 id="Description">Description</h2>
+<div class="description"><p>The <code>ngStyle</code> directive allows you to set CSS style on an HTML element conditionally.</p></div>
+<h2 id="Usage">Usage</h2>
+<div class="usage">as attribute<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY ng-style="{expression}"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+as class<div ng:non-bindable=""><pre class="brush: js; html-script: true;">&lt;ANY class="ng-style: {expression};"&gt;
+   ...
+&lt;/ANY&gt;</pre>
+</div>
+<h3 id="Parameters">Parameters</h3>
+<ul class="parameters"><li><code ng:non-bindable="">ngStyle – {expression} – </code>
+<p><a href="guide/dev_guide.expressions">Expression</a> which evals to an
+object whose keys are CSS style names and values are corresponding values for those CSS
+keys.</p></li>
+</ul>
+</div>
+<h2 id="Example">Example</h2>
+<div class="example"><doc:example>
+<pre class="doc-source">
+   &lt;input type="button" value="set" ng-click="myStyle={color:'red'}"&gt;
+   &lt;input type="button" value="clear" ng-click="myStyle={}"&gt;
+   &lt;br/&gt;
+   &lt;span ng-style="myStyle"&gt;Sample Text&lt;/span&gt;
+   &lt;pre&gt;myStyle={{myStyle}}&lt;/pre&gt;
+</pre>
+<pre class="doc-scenario">
+  it('should check ng-style', function() {
+    expect(element('.doc-example-live span').css('color')).toBe('rgb(0, 0, 0)');
+    element('.doc-example-live :button[value=set]').click();
+    expect(element('.doc-example-live span').css('color')).toBe('rgb(255, 0, 0)');
+    element('.doc-example-live :button[value=clear]').click();
+    expect(element('.doc-example-live span').css('color')).toBe('rgb(0, 0, 0)');
+  });
+</pre>
+</doc:example></div>
+</div>
