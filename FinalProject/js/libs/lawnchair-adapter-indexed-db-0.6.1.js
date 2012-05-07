@@ -22,56 +22,44 @@ Lawnchair.adapter('indexed-db', (function(){
     init:function(options, callback) {
         this.idb = getIDB();
         this.waiting = [];
-        var request = this.idb.open(this.name, "1.0" );
+        var request = this.idb.open(this.name);
         var self = this;
         var cb = self.fn(self.name, callback);
-        var win = function() { return cb.call(self, self); }
+        var win = function(){ return cb.call(self, self); }
         
         request.onsuccess = function(event) {
-            self.db = request.result; 
-            self.store = null;
-
-			// if the version number is wrong - create a version change, and call createObjectStore
-			if(self.db.version != "1.0") {
-      			var setVrequest = self.db.setVersion("1.0");
-      			// onsuccess resulting from a version change is the only place we can create Object Stores
-      			setVrequest.onsuccess = function(e) {
-          			self.store = self.db.createObjectStore("teststore", { autoIncrement: true} );
-          			for (var i = 0; i < self.waiting.length; i++) {
-              			self.waiting[i].call(self);
-          			}
-          			self.waiting = [];
-          			win();
-      			};
-      			setVrequest.onerror = function(e) {
-          			console.log("Failed to create objectstore " + e);
-          			fail(e);
-      			};
-
-			} else {
-				// should really check here to ensure "teststore" exists.
-					// if it doesn't, we need to: 
-						// set the db version and callCreateObjectStore in onsuccess of the versionchange
-						// save it in self.store, call any waiting transactions, and return
-
-				// get a ptr to the object store from a transaction and save it in self.store
-				var trans = self.db.transaction(["teststore"], webkitIDBTransaction.READ_WRITE );
-	   			self.store = trans.objectStore("teststore");
-
-				// call any waiting transactions, and return
-				for (var i = 0; i < self.waiting.length; i++) {
-	            	self.waiting[i].call(self);
-	          	}
-	          	self.waiting = [];
-	          	win();
-	      	}
+           self.db = request.result; 
+            
+            if(self.db.version != "1.0") {
+              var setVrequest = self.db.setVersion("1.0");
+              // onsuccess is the only place we can create Object Stores
+              setVrequest.onsuccess = function(e) {
+                  self.store = self.db.createObjectStore("teststore", { autoIncrement: true} );
+                  for (var i = 0; i < self.waiting.length; i++) {
+                      self.waiting[i].call(self);
+                  }
+                  self.waiting = [];
+                  win();
+              };
+              setVrequest.onerror = function(e) {
+                  console.log("Failed to create objectstore " + e);
+                  fail(e);
+              }
+            } else {
+                self.store = {};
+                for (var i = 0; i < self.waiting.length; i++) {
+                      self.waiting[i].call(self);
+                }
+                self.waiting = [];
+                win();
+            }
         }
-        request.onerror = fail; 
+        request.onerror = fail;
     },
 
     save:function(obj, callback) {
-        if(!this.store) {	// We must be trying to save before we've successfully opened the db:
-            this.waiting.push(function() {	// just queue the request up
+        if(!this.store) {
+            this.waiting.push(function() {
                 this.save(obj, callback);
             });
             return;
@@ -80,7 +68,7 @@ Lawnchair.adapter('indexed-db', (function(){
          var self = this;
          var win  = function (e) { if (callback) { obj.key = e.target.result; self.lambda(callback).call(self, obj) }};
          
-         var trans = this.db.transaction(["teststore"], webkitIDBTransaction.READ_WRITE );
+         var trans = this.db.transaction(["teststore"], webkitIDBTransaction.READ_WRITE);
          var store = trans.objectStore("teststore");
          var request = obj.key ? store.put(obj, obj.key) : store.put(obj);
          

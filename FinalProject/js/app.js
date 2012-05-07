@@ -9,7 +9,11 @@ var wReader = angular.module('wReader', ['wReader.filters']).
   // }]);
 
 // Create or open the data store where objects are stored for offline use
-var store = new Lawnchair({name: 'entries', record: 'entry'}, function() {
+var store = new Lawnchair({
+  name: 'entries',
+  record: 'entry',
+  adapter: 'indexed-db'
+}, function() {
   //TODO: this should probably go in the item store
   this.toggleRead = function(key, value) {
     this.get(key, function(entry) {
@@ -50,7 +54,7 @@ function DataController($scope, $http, $filter) {
     // Get all items from the local data store.
     //  We're using store.all because store.each returns async, and the
     //  method will return before we've pulled all the items out.  Then
-    //  there is a strong likelyhood of GetItemsFromServer stomping on
+    //  there is a strong likelihood of getItemsFromServer stomping on
     //  local items.
     var items = store.all(function(arr) {
       arr.forEach(function(entry) {
@@ -64,8 +68,10 @@ function DataController($scope, $http, $filter) {
       $scope.allItems = $scope.items;
 
       // Load items from the server after we've loaded everything from the local
-      // data store
+      // data store. Duplicate item starred/read states are preserved.
       $scope.getItemsFromServer();
+      
+      $scope.clearFilter();
     });
   };
 
@@ -114,6 +120,8 @@ function DataController($scope, $http, $filter) {
       });
 
       $scope.allItems = $scope.items;
+
+      console.log('Entries loaded from server:', $scope.items.length);
     };
 
     $scope.items = [];

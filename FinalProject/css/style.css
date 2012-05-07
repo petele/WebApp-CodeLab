@@ -137,7 +137,7 @@ section.mainContent div {
 }
 
 .summary.active {
-  background-color: #ccc;
+  background-color: #e4e4e4;
   border: 1px solid rgba(0, 0, 0, 0.05); 
   opacity: 1.0;
 }
