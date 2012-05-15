@@ -2,6 +2,7 @@
  * indexed db adapter
  * === 
  * - originally authored by Vivian Li
+ * - Updated by Eric Bidelman <ericbidelman.com>
  *
  */ 
 
@@ -10,10 +11,14 @@ Lawnchair.adapter('indexed-db', (function(){
   function fail(e, i) { console.log('error in indexed-db adapter!', e, i); debugger; } ;
      
   function getIDB(){
-    return window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.oIndexedDB || window.msIndexedDB;
+    return window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB ||
+           window.oIndexedDB || window.msIndexedDB;
   }; 
   
-  
+  var OBJ_STORE_NAME = 'teststore';
+  var READONLY = 'readonly';
+  var READWRITE = 'readwrite';
+  var DB_VERSION = '1.0';
     
   return {
     
@@ -30,11 +35,11 @@ Lawnchair.adapter('indexed-db', (function(){
         request.onsuccess = function(event) {
            self.db = request.result; 
             
-            if(self.db.version != "1.0") {
-              var setVrequest = self.db.setVersion("1.0");
+            if(self.db.version != DB_VERSION) {
+              var setVrequest = self.db.setVersion(DB_VERSION);
               // onsuccess is the only place we can create Object Stores
               setVrequest.onsuccess = function(e) {
-                  self.store = self.db.createObjectStore("teststore", { autoIncrement: true} );
+                  self.store = self.db.createObjectStore(OBJ_STORE_NAME, {autoIncrement: true});
                   for (var i = 0; i < self.waiting.length; i++) {
                       self.waiting[i].call(self);
                   }
@@ -68,8 +73,8 @@ Lawnchair.adapter('indexed-db', (function(){
          var self = this;
          var win  = function (e) { if (callback) { obj.key = e.target.result; self.lambda(callback).call(self, obj) }};
          
-         var trans = this.db.transaction(["teststore"], webkitIDBTransaction.READ_WRITE);
-         var store = trans.objectStore("teststore");
+         var trans = this.db.transaction([OBJ_STORE_NAME], READWRITE);
+         var store = trans.objectStore(OBJ_STORE_NAME);
          var request = obj.key ? store.put(obj, obj.key) : store.put(obj);
          
          request.onsuccess = win;
@@ -118,7 +123,7 @@ Lawnchair.adapter('indexed-db', (function(){
         
         
         if (!this.isArray(key)){
-            var req = this.db.transaction("teststore").objectStore("teststore").get(key);
+            var req = this.db.transaction([OBJ_STORE_NAME], READONLY).objectStore(OBJ_STORE_NAME).get(key);
 
             req.onsuccess = win;
             req.onerror = function(event) {
@@ -163,7 +168,7 @@ Lawnchair.adapter('indexed-db', (function(){
         }
         var cb = this.fn(this.name, callback) || undefined;
         var self = this;
-        var objectStore = this.db.transaction("teststore").objectStore("teststore");
+        var objectStore = this.db.transaction([OBJ_STORE_NAME], READONLY).objectStore(OBJ_STORE_NAME);
         var toReturn = [];
         objectStore.openCursor().onsuccess = function(event) {
           var cursor = event.target.result;
@@ -191,7 +196,7 @@ Lawnchair.adapter('indexed-db', (function(){
         var self = this;
         var win  = function () { if (callback) self.lambda(callback).call(self) };
         
-        var request = this.db.transaction(["teststore"], webkitIDBTransaction.READ_WRITE).objectStore("teststore").delete(keyOrObj);
+        var request = this.db.transaction([OBJ_STORE_NAME], READWRITE).objectStore(OBJ_STORE_NAME).delete(keyOrObj);
         request.onsuccess = win;
         request.onerror = fail;
         return this;
@@ -209,9 +214,8 @@ Lawnchair.adapter('indexed-db', (function(){
         ,   win  = callback ? function() { self.lambda(callback).call(self) } : function(){};
         
         try {
-            this.db
-                .transaction(["teststore"], webkitIDBTransaction.READ_WRITE)
-                .objectStore("teststore").clear().onsuccess = win;
+            this.db.transaction([OBJ_STORE_NAME], READWRITE)
+                   .objectStore(OBJ_STORE_NAME).clear().onsuccess = win;
             
         } catch(e) {
             fail();
