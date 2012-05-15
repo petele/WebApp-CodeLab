@@ -180,29 +180,17 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
 	  },
 
 
-	  selectItem: function(opt_idx) {
+	  selectItem: function(idx) {
 	    // Unselect previous selection.
 	    if (items.selected) {
 	      items.selected.selected = false;
 	    }
 
-	    if (opt_idx != undefined) {
-	    	items.selected = items.filtered[opt_idx];
-	    	items.selectedIdx = opt_idx;
-	    	items.selected.selected = true;
-	    } else {
-	      // this.item.selected = true;
-	      // selectedItem = this.item;
-	    }
+    	items.selected = items.filtered[idx];
+    	items.selectedIdx = idx;
+    	items.selected.selected = true;
 
 	    items.toggleRead(true);
-
-	    //TODO: Update the address bar
-	    //$location.hash(selectedItem.item_id)
-
-	    //var url = location.origin + location.pathname + '';
-	    //var item_url = "" + item.get('item_id');
-	    //history.pushState(item.get('item_id'), 'title', url + item_url);
 	  },
 
 
@@ -236,11 +224,28 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
 	    items.filtered = filter(items.all, function(item) {
 	      return item[key] === value;
 	    });
+	    items.reindexSelectedItem();
 	  },
 
 
 	  clearFilter: function() {
 	  	items.filtered = items.all;
+	  	items.reindexSelectedItem();
+	  },
+
+
+	  reindexSelectedItem: function() {
+	  	if (items.selected) {
+	  		var idx = items.filtered.indexOf(items.selected);
+
+	  		if (idx === -1) {
+	  			items.selected.selected = false;
+	  			items.selected = null;
+	  			items.selectedIdx = null;
+	  		} else {
+	  			items.selectedIdx = idx;
+	  		}
+	  	}
 	  }
 	};
 
