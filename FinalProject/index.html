@@ -30,7 +30,7 @@
 
   <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
 </head>
-<body ng-controller="DataController" class="ng-cloak" w-down="items.next()" w-up="items.prev()"
+<body ng-controller="AppController" class="ng-cloak" w-down="items.next()" w-up="items.prev()"
       w-read="toggleRead()" w-star="toggleStar()" w-space="handleSpace()">
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
@@ -125,7 +125,7 @@
           <p class="post-content" ng-bind-html-unsafe="items.selected.content"></p>
         </div>
       </article>
-      <div class="nothingSelected" ng-show="!items.length || !items.selected">
+      <div class="nothingSelected" ng-show="!items.filtered.length || !items.selected">
         <img src="img/sadpanda.png" alt="Sad Panda" title="Sad Panda">
         <p>Nothing selected.</p>
       </div>
@@ -161,6 +161,7 @@
   <script src="js/app.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/services.js"></script>
+  <script src="js/directives.js"></script>
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
        mathiasbynens.be/notes/async-analytics-snippet -->

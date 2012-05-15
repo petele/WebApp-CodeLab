@@ -1,13 +1,15 @@
-/* http://docs-next.angularjs.org/api/angular.module.ng.$filter */
+var filters = angular.module('wReader.filters', []);
 
-angular.module('wReader.filters', []).
-  filter('formattedDate', function() {
-    return function(d) {
-      return d ? moment(d).fromNow() : '';
-    }
-  }).
-  filter('formattedFullDate', function() {
-    return function(d) {
-      return d ? moment(d).format('MMMM Do YYYY, h:mm a') : '';
-    }
-  });
+
+filters.filter('formattedDate', function() {
+  return function(d) {
+    return d ? moment(d).fromNow() : '';
+  }
+});
+
+
+filters.filter('formattedFullDate', function() {
+  return function(d) {
+    return d ? moment(d).format('MMMM Do YYYY, h:mm a') : '';
+  }
+});
