@@ -246,6 +246,26 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
 	  			items.selectedIdx = idx;
 	  		}
 	  	}
+	  },
+
+
+	  allCount: function() {
+	  	return items.all.length;
+	  },
+
+
+	  readCount: function() {
+	  	return items.all.filter(function(val, i) { return val.read }).length;
+	  },
+
+
+	  unreadCount: function() {
+	  	return items.all.length - items.readCount();
+	  },
+
+
+	  starredCount: function() {
+	  	return items.all.filter(function(val, i) { return val.starred }).length;
 	  }
 	};
 

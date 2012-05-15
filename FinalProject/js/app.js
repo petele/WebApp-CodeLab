@@ -5,22 +5,6 @@ function AppController($scope, items, scroll) {
 
   $scope.items = items;
 
-  $scope.itemCount = function() {
-    return items.all.length;
-  };
-
-  $scope.readCount = function() {
-    return items.all.filter(function(val, i) { return val.read }).length;
-  };
-
-  $scope.unreadCount = function() {
-    return items.all.length - $scope.readCount();
-  };
-
-  $scope.starredCount = function() {
-    return items.all.filter(function(val, i) { return val.starred }).length;
-  };
-
   $scope.refresh = function() {
     items.getItemsFromServer();
   };

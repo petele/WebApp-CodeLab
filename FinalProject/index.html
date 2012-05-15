@@ -46,13 +46,13 @@
           </a>
           <ul class="nav">
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showAll()">{{itemCount()}} Items</a></li>
+            <li class="itemCount"><a ng-click="showAll()">{{items.allCount()}} Items</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showUnread()">{{unreadCount()}} Unread</a></li>
+            <li class="itemCount"><a ng-click="showUnread()">{{items.unreadCount()}} Unread</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showStarred()">{{starredCount()}} Starred</a></li>
+            <li class="itemCount"><a ng-click="showStarred()">{{items.starredCount()}} Starred</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showRead()">{{readCount()}} Read</a></li>
+            <li class="itemCount"><a ng-click="showRead()">{{items.readCount()}} Read</a></li>
             <li class="divider-vertical"></li>
           </ul>
           <form class="navbar-search pull-left" id="navSearch">
