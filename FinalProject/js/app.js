@@ -21,7 +21,7 @@ var wReader = angular.module('wReader', ['wReader.filters', 'wReader.services'])
 
 
 
-function DataController($scope, items, $filter) {
+function DataController($scope, items, scroll) {
 
   $scope.items = items;
 
@@ -46,39 +46,17 @@ function DataController($scope, items, $filter) {
   };
 
   $scope.handleSpace = function() {
-    var itemHeight = $('.entry.active').height() + 60;
-    var winHeight = $(window).height();
-    var curScroll = $('.entries').scrollTop();
-    var scroll = curScroll + winHeight;
-    if (scroll < itemHeight) {
-      $('.entries').scrollTop(scroll);
-    } else {
+    if (!scroll.pageDown()) {
       items.next();
     }
   };
-}
 
-DataController.$inject = ['$scope', 'items', '$filter']; // For JS compilers.
-
-
-function ItemsController($scope) { //{, $location) {
-  // A special observer that will watch for when the 'selectedItem' is updated
-  // and ensure that we scroll into a view so that the selected item is visible
-  // in the summary list view.
   $scope.$watch('items.selectedIdx', function(newVal, oldVal, scope) {
-    // TODO: Performing scrolling like this doesn't seem very Angular-ly.
-    // Need the setTimeout to prevent race condition with item being selected.
-    if (newVal != null) {
-      window.setTimeout(function() {
-        var curScrollPos = $('.summaries').scrollTop();
-        var itemTop = $('.summary.active').offset().top - 60;
-        $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
-      }, 0);
-    }
+    if (newVal !== null) scroll.toCurrent();
   });
 }
 
-ItemsController.$inject = ['$scope'];//, '$location'];  // For JS compilers.
+DataController.$inject = ['$scope', 'items', 'scroll']; // For JS compilers.
 
 
 // Top Menu/Nav Bar

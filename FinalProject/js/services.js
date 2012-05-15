@@ -247,3 +247,30 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
 	items.getItemsFromDataStore();
 	return items;
 }]);
+
+
+services.value('scroll', {
+	pageDown: function() {
+		var itemHeight = $('.entry.active').height() + 60;
+	  var winHeight = $(window).height();
+	  var curScroll = $('.entries').scrollTop();
+	  var scroll = curScroll + winHeight;
+
+	  if (scroll < itemHeight) {
+	  	$('.entries').scrollTop(scroll);
+	  	return true;
+	  }
+
+	  // already at the bottom
+	  return false;
+	},
+
+	toCurrent: function() {
+		// Need the setTimeout to prevent race condition with item being selected.
+		window.setTimeout(function() {
+      var curScrollPos = $('.summaries').scrollTop();
+      var itemTop = $('.summary.active').offset().top - 60;
+      $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
+    }, 0);
+	}
+});
