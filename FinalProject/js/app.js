@@ -80,7 +80,7 @@ function DataController($scope, $http, $filter) {
       // Load items from the server after we've loaded everything from the local
       // data store.
       $scope.getItemsFromServer();
-      
+
       //$scope.clearFilter(); // Show all items by default.
     });
   };
@@ -179,6 +179,33 @@ function DataController($scope, $http, $filter) {
     return $scope.allItems.filter(function(val, i) { return val.starred }).length;
   };
 
+  // Advances to the next item.
+  $scope.navDown = function(opt_delta) {
+    var delta = opt_delta || 1;
+    var selectedItem = $scope.selectedItem();
+    var index = selectedItem.item != null ? selectedItem.index + delta : 0;
+
+    if (0 <= index && index < $scope.items.length) {
+      $scope.selectItem(index);
+    }
+  };
+
+  // Goes back to the previous item.
+  $scope.navUp = function() {
+    $scope.navDown(-1);
+  };
+
+  // Click handler to toggle the selected items star status
+  $scope.toggleStar = function() {
+    $scope.$parent.toggleStar();
+  };
+
+  // Click handler to toggle the selected items read status
+  $scope.toggleRead = function() {
+    $scope.$parent.toggleRead();
+  };
+
+  // Click handler to mark all as read
   $scope.markAllRead = function() {
     // Iterate through all items, and set read=true in the data controller
     // then set read=true in the data store.
@@ -188,6 +215,16 @@ function DataController($scope, $http, $filter) {
     });
   };
 
+  $scope.selectedItem = function() {
+    for (var i = 0, item; item = $scope.items[i]; ++i) {
+      if (item.selected == true) {
+        return {item: item, index: i};
+      }
+    }
+    return {item: null, index: null};
+  };
+
+
   $scope.clearFilter = function() {
     $scope.items = $scope.allItems;
   };
@@ -196,6 +233,81 @@ function DataController($scope, $http, $filter) {
     $scope.items = $filter('filter')($scope.allItems, function(item, i) {
       return item[key] == value;
     });
+  };
+
+  $scope.handleSpace = function() {
+    var itemHeight = $('.entry.active').height() + 60;
+    var winHeight = $(window).height();
+    var curScroll = $('.entries').scrollTop();
+    var scroll = curScroll + winHeight;
+    if (scroll < itemHeight) {
+      $('.entries').scrollTop(scroll);
+    } else {
+      $scope.navDown();
+    }
+  };
+
+  $scope.hasNext = function() {
+    var selectedItem = $scope.selectedItem();
+    if (selectedItem.index == null) {
+      return true;
+    }
+    return selectedItem.index < $scope.items.length - 1;
+  };
+
+  $scope.hasPrev = function() {
+    var selectedItem = $scope.selectedItem();
+    if (selectedItem.index == null) {
+      return true;
+    }
+    return selectedItem.index > 0;
+  };
+
+  // Called to select an item
+  $scope.selectItem = function(opt_idx) {
+
+    // Unselect previous selection.
+    var selectedItem = $scope.selectedItem().item;
+    if (selectedItem) {
+      selectedItem.selected = false;
+    }
+
+    if (opt_idx != undefined) {
+      selectedItem = $scope.items[opt_idx];
+      selectedItem.selected = true;
+    } else {
+      this.item.selected = true;
+      selectedItem = this.item;
+    }
+
+    $scope.toggleRead(true);
+
+    //TODO: Update the address bar
+    //$location.hash(selectedItem.item_id)
+
+    //var url = location.origin + location.pathname + '';
+    //var item_url = "" + item.get('item_id');
+    //history.pushState(item.get('item_id'), 'title', url + item_url);
+  };
+
+
+
+  // Toggles or sets the read state with an optional boolean
+  $scope.toggleRead = function(opt_read) {
+    var selectedItem = $scope.selectedItem().item;
+    var read = opt_read || !selectedItem.read;
+    selectedItem.read = read;
+    var key = selectedItem.item_id;
+    store.toggleRead(key, read);
+  };
+
+  // Toggles or sets the starred status with an optional boolean
+  $scope.toggleStar = function(opt_star) {
+    var selectedItem = $scope.selectedItem().item;
+    var star = opt_star || !selectedItem.starred;
+    selectedItem.starred = star;
+    var key = selectedItem.item_id;
+    store.toggleStar(key, star);
   };
 
   // Fetch items when the constructor is called.
@@ -217,92 +329,13 @@ function ItemsController($scope) { //{, $location) {
         var curScrollPos = $('.summaries').scrollTop();
         var itemTop = $('.summary.active').offset().top - 60;
         $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
-      }, 0); 
-    }   
+      }, 0);
+    }
   });
 
-  $scope.selectedItem = function() {
-    for (var i = 0, item; item = $scope.$parent.items[i]; ++i) {
-      if (item.selected == true) {
-        return {item: item, index: i};
-      }
-    }
-    return {item: null, index: null};
-  };
 
-  $scope.hasNext = function() {
-    var selectedItem = $scope.selectedItem();
-    if (selectedItem.index == null) {
-      return true;
-    }
-    return selectedItem.index < $scope.$parent.items.length - 1;
-  };
-  
-  $scope.hasPrev = function() {
-    var selectedItem = $scope.selectedItem();
-    if (selectedItem.index == null) {
-      return true;
-    }
-    return selectedItem.index > 0;
-  };
 
-  // Called to select an item
-  $scope.selectItem = function(opt_idx) {
 
-    // Unselect previous selection.
-    var selectedItem = $scope.selectedItem().item;
-    if (selectedItem) {
-      selectedItem.selected = false;
-    }
-
-    if (opt_idx != undefined) {
-      selectedItem = $scope.$parent.items[opt_idx];
-      selectedItem.selected = true;
-    } else {
-      this.item.selected = true;
-      selectedItem = this.item;
-    }
-
-    $scope.toggleRead(true);
-
-    //TODO: Update the address bar
-    //$location.hash(selectedItem.item_id)
-
-    //var url = location.origin + location.pathname + '';
-    //var item_url = "" + item.get('item_id');
-    //history.pushState(item.get('item_id'), 'title', url + item_url);
-  };
-
-  // Advances to the next item.
-  $scope.next = function(opt_delta) {
-    var delta = opt_delta || 1;
-
-    var selectedItem = $scope.selectedItem();
-    $scope.selectItem(selectedItem.item != null ? selectedItem.index + delta : 0);
-  };
-
-  // Goes back to the previous item.
-  $scope.prev = function() {
-    $scope.next(-1);
-  };
-
-  // Toggles or sets the read state with an optional boolean
-  $scope.toggleRead = function(opt_read) {
-    var selectedItem = $scope.selectedItem().item;
-    var read = opt_read || !selectedItem.read;
-    selectedItem.read = read;
-    var key = selectedItem.item_id;
-    store.toggleRead(key, read);
-  };
-
-  // Toggles or sets the starred status with an optional boolean
-  $scope.toggleStar = function(opt_star) {
-    var selectedItem = $scope.selectedItem().item;
-    var star = opt_star || !selectedItem.starred;
-    selectedItem.starred = star;
-    var key = selectedItem.item_id;
-    store.toggleStar(key, star);
-  };
 }
 
 ItemsController.$inject = ['$scope'];//, '$location'];  // For JS compilers.
@@ -310,7 +343,7 @@ ItemsController.$inject = ['$scope'];//, '$location'];  // For JS compilers.
 
 // Top Menu/Nav Bar
 function NavBarController($scope) {//, $injector) {
-  //$injector.invoke(ItemsController, this, {$scope: $scope}); 
+  //$injector.invoke(ItemsController, this, {$scope: $scope});
 
   // Click handler for menu bar
   $scope.showAll = function() {
@@ -345,86 +378,47 @@ NavBarController.$inject = ['$scope'];  // For JS compilers.
 
 function NavControlsView($scope) {
 
-  // Click handler for up/previous button
-  $scope.navUp = function() {
-    $scope.$parent.prev();
-  };
-
-  // Click handler for down/next button
-  $scope.navDown = function() {
-    $scope.$parent.next();
-  };
-
-  // Click handler to toggle the selected items star status
-  $scope.toggleStar = function() {
-    $scope.$parent.toggleStar();
-  };
-
-  // Click handler to toggle the selected items read status
-  $scope.toggleRead = function() {
-    $scope.$parent.toggleRead();
-  };
-
-  // Click handler to mark all as read
-  $scope.markAllRead = function() {
-    $scope.$parent.markAllRead();
-  };
-
   // Click handler for refresh
   $scope.refresh = function() {
     $scope.getItemsFromServer();
   };
 }
 
+wReader.directive('wUp', function() {
+  return function(scope, elm, attr) {
+    elm.bind('keydown', function(e) {
+      switch (e.keyCode) {
+        case 34: // PgDn
+        case 39: // right arrow
+        case 40: // down arrow
+        case 74: // j
+          return scope.$apply(attr.wDown);
 
-function handleSpace() {
-  var itemHeight = $('.entry.active').height() + 60;
-  var winHeight = $(window).height();
-  var curScroll = $('.entries').scrollTop();
-  var scroll = curScroll + winHeight;
-  if (scroll < itemHeight) {
-    $('.entries').scrollTop(scroll);
-  } else {
-    $('.controls button[ng-click="navDown()"]').click();
-  }
-};
+        case 32: // Space
+          e.preventDefault();
+          return scope.$apply(attr.wSpace);
 
-function handleBodyKeyDown(e) {
-  switch (e.keyCode) {
-    case 34: // PgDn
-    case 39: // right arrow
-    case 40: // down arrow
-    case 74: // j
-      $('.controls button[ng-click="navDown()"]').click(); // TODO: figure out angular way
-      break;
+        case 33: // PgUp
+        case 37: // left arrow
+        case 38: // up arrow
+        case 75: // k
+          return scope.$apply(attr.wUp);
 
-    case 32: // Space
-      handleSpace();
-      e.preventDefault();
-      break;
+        case 85: // U
+          return scope.$apply(attr.wRead);
 
-    case 33: // PgUp
-    case 37: // left arrow
-    case 38: // up arrow
-    case 75: // k
-      $('.controls button[ng-click="navUp()"]').click();
-      break;
+        case 72: // H
+          return scope.$apply(attr.wStar);
+      }
+    });
+  };
+});
 
-    case 85: // U
-      $('.controls button[ng-click="toggleRead()"]').click();
-      break;
-
-    case 72: // H
-      $('.controls button[ng-click="toggleStar()"]').click();
-      break;
-  }
-}
 
 function handlePopState(e) {
   //console.log("Pop State", e);
 }
 
-document.body.addEventListener('keydown', handleBodyKeyDown, false);
 window.addEventListener('popstate', handlePopState, false);
 
 document.addEventListener('DOMContentLoaded', function(e) {

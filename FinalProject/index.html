@@ -30,7 +30,8 @@
 
   <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
 </head>
-<body ng-controller="DataController" class="ng-cloak">
+<body ng-controller="DataController" class="ng-cloak" w-down="navDown()" w-up="navUp()"
+      w-read="toggleRead()" w-star="toggleStar()" w-space="handleSpace()">
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
