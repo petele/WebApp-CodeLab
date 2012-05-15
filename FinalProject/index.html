@@ -30,12 +30,12 @@
 
   <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
 </head>
-<body ng-controller="DataController" class="ng-cloak" w-down="navDown()" w-up="navUp()"
+<body ng-controller="DataController" class="ng-cloak" w-down="items.next()" w-up="items.prev()"
       w-read="toggleRead()" w-star="toggleStar()" w-space="handleSpace()">
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
- 
+
   <header>
 
     <div class="navbar navbar-fixed-top no-select" ng-controller="NavBarController">
@@ -71,23 +71,23 @@
   </header>
   <section class="mainContent" ng-controller="ItemsController">
 
-    <section class="controls no-select" ng-controller="NavControlsView">
+    <section class="controls no-select">
       <div class="tControls">
         <div class="top">
-          <button ng-click="markAllRead()" class="btn" title="Mark all as read" alt="Mark all as read"><i class="icon-ok"></i></button>
+          <button ng-click="items.markAllRead()" class="btn" title="Mark all as read" alt="Mark all as read"><i class="icon-ok"></i></button>
         </div>
         <div class="middle">
-          <button ng-click="navUp()" class="btn" ng-disabled="!hasPrev()"><i class="icon-arrow-up"></i></button>
-          <button ng-click="toggleStar()" ng-disabled="!!!selectedItem().item" class="btn">
-            <i ng-class="{'icon-star': selectedItem().item.starred, 'icon-star-empty': !selectedItem().item.starred}"></i>
+          <button ng-click="items.prev()" class="btn" ng-disabled="!items.hasPrev()"><i class="icon-arrow-up"></i></button>
+          <button ng-click="items.toggleStar()" ng-disabled="!items.selected" class="btn">
+            <i ng-class="{'icon-star': items.selected.starred, 'icon-star-empty': !items.selected.starred}"></i>
           </button>
-          <button ng-click="toggleRead()" ng-disabled="!!!selectedItem().item" class="btn">
-            <i ng-class="{'icon-ok-sign': selectedItem().item.read, 'icon-ok-circle': !selectedItem().item.read}"></i>
+          <button ng-click="items.toggleRead()" ng-disabled="!items.selected" class="btn">
+            <i ng-class="{'icon-ok-sign': items.selected.read, 'icon-ok-circle': !items.selected.read}"></i>
           </button>
-          <button ng-click="navDown()" class="btn" ng-disabled="!hasNext()"><i class="icon-arrow-down"></i></button>
+          <button ng-click="items.next()" class="btn" ng-disabled="!items.hasNext()"><i class="icon-arrow-down"></i></button>
         </div>
         <div class="bottom">
-          <button ng-click="refresh()" class="btn" title="Refresh feeds" alt="Refresh feeds">
+          <button ng-click="items.refresh()" class="btn" title="Refresh feeds" alt="Refresh feeds">
             <i class="icon-refresh"></i>
           </button>
         </div>
@@ -95,7 +95,7 @@
     </section>
 
     <section class="summaries">
-      <article ng-repeat="item in items | orderBy:'-pub_date' | filter:$parent.search" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="selectItem()">
+      <article ng-repeat="item in items.filtered | filter: search | orderBy: '-pub_date'" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="items.selectItem($index)">
         <div class="row-fluid" >
           <div class="span6 pub-name">
             {{item.pub_name}}
@@ -110,22 +110,22 @@
 
     <section class="entries">
 
-      <article class="well entry" ng-class="{read: selectedItem().item.read, active: selectedItem().item.selected}" ng-hide="!!!selectedItem().item">
+      <article class="well entry" ng-class="{read: items.selected.read, active: items.selected.selected}" ng-hide="!items.selected">
         <div class="row-fluid">
-          <div class="span8">{{selectedItem().item.pub_date | formattedDate}}</div>
+          <div class="span8">{{items.selected.pub_date | formattedDate}}</div>
             <div class="span4 actions">
-              <input type="checkbox" class="read" ng-model="selectedItem().item.read">
-              <input type="checkbox" class="star" ng-model="selectedItem().item.starred">
-              <a href="{{selectedItem().item.item_link}}"><i class="icon-share"></i></a>
+              <input type="checkbox" class="read" ng-model="items.selected.read">
+              <input type="checkbox" class="star" ng-model="items.selected.starred">
+              <a href="{{items.selected.item_link}}"><i class="icon-share"></i></a>
             </div>
           </div>
-          <h2>{{selectedItem().item.title}}</h2>
-          <span class="author">{{selectedItem().item.pub_author}}</span> - <span class="pub-name">{{selectedItem().item.pub_name}}</span>
+          <h2>{{items.selected.title}}</h2>
+          <span class="author">{{items.selected.pub_author}}</span> - <span class="pub-name">{{items.selected.pub_name}}</span>
           <hr />
-          <p class="post-content" ng-bind-html-unsafe="selectedItem().item.content"></p>
+          <p class="post-content" ng-bind-html-unsafe="items.selected.content"></p>
         </div>
       </article>
-      <div class="nothingSelected" ng-show="!items.length || !!!selectedItem().item">
+      <div class="nothingSelected" ng-show="!items.length || !items.selected">
         <img src="img/sadpanda.png" alt="Sad Panda" title="Sad Panda">
         <p>Nothing selected.</p>
       </div>
@@ -160,10 +160,11 @@
   <script src="js/libs/moment-1.4.0.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/filters.js"></script>
+  <script src="js/services.js"></script>
 
   <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
        mathiasbynens.be/notes/async-analytics-snippet -->
-  
+
   <!--<script>
     var _gaq=[['_setAccount','UA-29459980-1'],['_trackPageview']];
     (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
