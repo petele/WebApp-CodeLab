@@ -30,8 +30,8 @@
 
   <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
 </head>
-<body ng-controller="AppController" class="ng-cloak" w-down="items.next()" w-up="items.prev()"
-      w-read="toggleRead()" w-star="toggleStar()" w-space="handleSpace()">
+<body ng-controller="AppController" class="ng-cloak" w-keydown w-space="handleSpace()"
+      w-down="items.next()" w-up="items.prev()" w-read="toggleRead()" w-star="toggleStar()" >
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
        chromium.org/developers/how-tos/chrome-frame-getting-started -->
   <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->

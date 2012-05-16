@@ -1,7 +1,7 @@
 var directives = angular.module('wReader.directives', []);
 
 
-directives.directive('wUp', function() {
+directives.directive('wKeydown', function() {
   return function(scope, elm, attr) {
     elm.bind('keydown', function(e) {
       switch (e.keyCode) {
