@@ -37,8 +37,7 @@ function Item(entry, pub_name, feed_link) {
 services.factory('store', function() {
 	return new Lawnchair({
 	  name: 'entries',
-	  record: 'entry',
-	  adapter: 'indexed-db'
+	  record: 'entry'
 	}, function() {
 	  //TODO: this should probably go in the item store
 	  this.toggleRead = function(key, value) {
