@@ -140,8 +140,8 @@ function DataController($scope, $http, $filter) {
       $scope.allItems = $scope.items;
     };
 
-    $http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback).error(errorCallback);
-    //$http.get(feedURL).success(successCallback).error(errorCallback);
+    //$http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback).error(errorCallback);
+    $http.get(feedURL).success(successCallback).error(errorCallback);
   };
 
   // Adds an item to the controller if it's not already in the controller
