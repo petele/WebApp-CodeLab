@@ -1,6 +1,5 @@
 
 
-
 // Create the all up Ember application
 var WReader = Em.Application.create({
   ready: function() {
@@ -73,7 +72,9 @@ WReader.SummaryListView = Em.View.extend({
   tagName: 'article',
   classNames: ['well', 'summary']
 
-  /* Exercise 3.4 */
+  /* Exercise 3.4a */
+  
+  /* Exercise 3.4b */
 
   /* Exercise 3.5 */
 
