@@ -121,10 +121,11 @@ In this exercise, we'll add some additional properties to our controller so we c
 ### Step 1: Add additional properties to the dataController
 We want to show the number of items that are in our data controller, including the total count, how many have been read, how many are unread, and how many are starred.  Ember allows us to make a function act like a property by adding `.property()` to the end of the function.  The value we pass to the property function tells Ember when the specified item is updated, it needs to update the value of the property.
 
-Let's look at an example for readCount:
+Let's look at an example for the `readCount` method:
+
     readCount: function() {
-      return 1;
-    }.property('@each')
+        return 1;
+    }.property('@each.read')
 
 Right now, it simply returns 1, but we want it to return the number of read items in our data controller.  To do that, we need to get the list of read items, and then get the length of that filtered list.  Ember provides an easy way to filter objects with the `filterProperty(name, value)` function.  Let's replace the `return 1;` with `return this.filterProperty('read', true).get('length');`
 
