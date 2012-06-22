@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="wReader">
+<html lang="en" ng-app="wReader" ng-csp>
 <head>
   <meta charset="utf-8">
 
@@ -122,7 +122,7 @@
           <h2>{{items.selected.title}}</h2>
           <span class="author">{{items.selected.pub_author}}</span> - <span class="pub-name">{{items.selected.pub_name}}</span>
           <hr />
-          <p class="post-content" ng-bind-html-unsafe="items.selected.content"></p>
+          <w-content class="post-content" src="items.selected.content"></w-content>
         </div>
       </article>
       <div class="nothingSelected" ng-show="!items.filtered.length || !items.selected">

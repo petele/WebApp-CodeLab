@@ -124,9 +124,7 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
         console.log('Entries loaded from server:', items.all.length);
       };
 
-
-      $http.jsonp(feedURL + '&callback=JSON_CALLBACK').success(successCallback);
-      //$http.get(feedURL).success(successCallback).error(errorCallback);
+      $http.get(feedURL).success(successCallback);
     },
 
 

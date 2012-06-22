@@ -30,3 +30,27 @@ directives.directive('wKeydown', function() {
     });
   };
 });
+
+
+/**
+ * Component that handles rendering a post content in an iframe. the post content is data-bound into the component via
+ * the src attribute.
+ *
+ * example usage:
+ * <w-content src="post.content"><w-conent>
+ */
+directives.directive('wContent', function() {
+  return {
+    restrict: 'E',
+    template: '<iframe src="post-content.html" seamless></iframe>',
+    link: function($scope, $element, attrs) {
+      var iframeWindow = $element.find('iframe')[0].contentWindow;
+
+
+      $scope.$watch(attrs.src, function(content) {
+        console.log('new content');
+        iframeWindow.postMessage(content, '*');
+      });
+    }
+  }
+});

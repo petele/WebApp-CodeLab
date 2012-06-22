@@ -2,24 +2,19 @@
   "name": "wReader",
   "version": "0.0.1",
   "manifest_version": 2,
-  "platform_app": true,
-  "background": {
-    "scripts": ["js/background.js"]
+  "app": {
+    "background": {
+      "scripts": ["js/background.js"]
+    }
   },
   "permissions": [
     "experimental",
-    "windows",
+    "appWindow",
     "*://blog.chromium.org/feeds/*"
   ],
-  "content_security_policy": "script-src 'self' https://blog.chromium.org; object-src 'self'",
-  "intents": {
-    "http://webintents.org/view": [
-      { 
-        "type": ["application/rss+xml", "application/atom+xml"],
-        "href": "/index.html",
-        "title": "wReader",
-        "disposition" : "inline"
-      }
+  "sandbox": {
+    "pages": [
+      "post-content.html"
     ]
   }
 }
