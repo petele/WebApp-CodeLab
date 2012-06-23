@@ -33,10 +33,10 @@ function Item(entry, pub_name, feed_link) {
 
 
 // Create or open the data store where objects are stored for offline use
-services.factory('store', ['$defer', function($defer) {
+services.factory('store', ['$timeout', function($timeout) {
   return {
     all: function(fn) {
-      $defer(function() {
+      $timeout(function() {
         fn([]);
       });
     },
