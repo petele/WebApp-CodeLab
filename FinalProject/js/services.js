@@ -21,7 +21,6 @@ function Item(entry, pub_name, feed_link) {
   if (entry) {
     this.title = entry.title.$t;
     this.item_id = entry.id.$t;
-    this.key = this.item_id; // For LawnChair.
     this.pub_name = pub_name; // Set the pub name to the feed's title.
     this.pub_author = entry.author[0].name.$t;
     this.pub_date = new Date(entry.published.$t);
@@ -34,28 +33,18 @@ function Item(entry, pub_name, feed_link) {
 
 
 // Create or open the data store where objects are stored for offline use
-services.factory('store', function() {
-  return new Lawnchair({
-    name: 'entries',
-    record: 'entry'
-  }, function() {
-    //TODO: this should probably go in the item store
-    this.toggleRead = function(key, value) {
-      this.get(key, function(entry) {
-        entry.read = value;
-        this.save(entry);
+services.factory('store', ['$defer', function($defer) {
+  return {
+    all: function(fn) {
+      $defer(function() {
+        fn([]);
       });
-    };
-
-    //TODO: this should probably go in the item store
-    this.toggleStar = function(key, value) {
-      this.get(key, function(entry) {
-        entry.starred = value;
-        this.save(entry);
-      });
-    };
-  });
-});
+    },
+    save: function(entry) {},
+    toggleRead: function(entryId, read) {},
+    toggleStar: function(entryId, starred) {}
+  };
+}]);
 
 
 services.factory('items', ['$http', 'store', 'filterFilter', function($http, store, filter) {

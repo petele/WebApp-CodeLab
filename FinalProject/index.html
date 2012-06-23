@@ -3,39 +3,15 @@
 <head>
   <meta charset="utf-8">
 
-  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
-       More info: h5bp.com/i/378 -->
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
   <title>wReader</title>
-  <meta name="description" content="">
-
-  <!-- Mobile viewport optimized: h5bp.com/viewport -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
 
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
-
-  <!-- All JavaScript at the bottom, except this Modernizr build.
-       Modernizr enables HTML5 elements & feature detects for optimal performance.
-       Create your own custom Modernizr build: www.modernizr.com/download/ -->
-  <script src="js/libs/modernizr-2.5.3.min.js"></script>
-
   <script src="js/libs/angular-1.0.0rc8/angular-1.0.0rc8.min.js"></script>
-
-  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
 </head>
 <body ng-controller="AppController" class="ng-cloak" w-keydown w-space="handleSpace()"
       w-down="items.next()" w-up="items.prev()" w-read="toggleRead()" w-star="toggleStar()" >
-  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
-       chromium.org/developers/how-tos/chrome-frame-getting-started -->
-  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
-
   <header>
 
     <div class="navbar navbar-fixed-top no-select" ng-controller="NavBarController">
@@ -68,6 +44,7 @@
         </div>
       </div>
     </div>
+
   </header>
   <section class="mainContent">
 
@@ -140,38 +117,19 @@
     </div>
     <div class="modal-body">
       <p>Original WReader by <a href="http://petelepage.com">Pete LePage</a>.
-      Angular port by <a href="http://ericbidelman.com">Eric Bidelman</a>.</p>
+      AngularJS port by <a href="http://ericbidelman.com">Eric Bidelman</a>, Vojta Jina and Igor Minar.</p>
     </div>
     <div class="modal-footer">
       <a data-dismiss="modal" class="btn btn-primary">Close</a>
     </div>
   </div>
 
-  <footer>
-
-  </footer>
-</script>
   <script src="js/libs/jquery-1.7.1.min.js"></script>
-  <script src="js/libs/bootstrap.min.js"></script>
-  <!--<script src="js/plugins.js"></script>-->
-  <script src="js/libs/lawnchair-0.6.1.min.js"></script>
-  <script src="js/libs/lawnchair-adapter-indexed-db-0.6.1.js"></script>
-  <script src="js/libs/lawnchair-adapter-webkit-sqlite-0.6.1.js"></script>
-  <script src="js/libs/lawnchair-pagination-0.6.1.js"></script>
   <script src="js/libs/moment-1.4.0.min.js"></script>
   <script src="js/app.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/services.js"></script>
   <script src="js/directives.js"></script>
 
-  <!-- Asynchronous Google Analytics snippet. Change UA-XXXXX-X to be your site's ID.
-       mathiasbynens.be/notes/async-analytics-snippet -->
-
-  <!--<script>
-    var _gaq=[['_setAccount','UA-29459980-1'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-  </script>-->
 </body>
 </html>

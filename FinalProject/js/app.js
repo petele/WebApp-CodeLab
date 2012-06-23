@@ -15,7 +15,7 @@ function AppController($scope, items, scroll) {
     }
   };
 
-  $scope.$watch('items.selectedIdx', function(newVal, oldVal, scope) {
+  $scope.$watch('items.selectedIdx', function(newVal) {
     if (newVal !== null) scroll.toCurrent();
   });
 }
@@ -44,10 +44,3 @@ function NavBarController($scope, items) {
 }
 
 NavBarController.$inject = ['$scope', 'items'];  // For JS compilers.
-
-
-
-document.addEventListener('DOMContentLoaded', function(e) {
-  //On mobile devices, hide the address bar
-  window.scrollTo(0);
-}, false);

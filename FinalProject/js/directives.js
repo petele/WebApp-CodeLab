@@ -1,6 +1,10 @@
 var directives = angular.module('wReader.directives', []);
 
-
+/**
+ * Directive for binding keyboard shortcuts.
+ *
+ * When a key press matches one of the key bindings, the associated expression is executed.
+ */
 directives.directive('wKeydown', function() {
   return function(scope, elm, attr) {
     elm.bind('keydown', function(e) {
@@ -46,9 +50,7 @@ directives.directive('wContent', function() {
     link: function($scope, $element, attrs) {
       var iframeWindow = $element.find('iframe')[0].contentWindow;
 
-
       $scope.$watch(attrs.src, function(content) {
-        console.log('new content');
         iframeWindow.postMessage(content, '*');
       });
     }
