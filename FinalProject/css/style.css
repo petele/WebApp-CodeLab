@@ -1,3 +1,7 @@
+[ng-cloak] {
+  display: none;
+}
+
 body ::-webkit-scrollbar {
   height: 16px;
   overflow: visible;
@@ -138,7 +142,7 @@ section.mainContent div {
 
 .summary.active {
   background-color: #e4e4e4;
-  border: 1px solid rgba(0, 0, 0, 0.05); 
+  border: 1px solid rgba(0, 0, 0, 0.05);
   opacity: 1.0;
 }
 
@@ -163,7 +167,7 @@ section.mainContent div {
 }
 
 .entry {
-  -webkit-transition: all 0.5s ease-in-out; 
+  -webkit-transition: all 0.5s ease-in-out;
   box-shadow: 5px 5px 5px rgba(210, 210, 210, 0.6);
 }
 

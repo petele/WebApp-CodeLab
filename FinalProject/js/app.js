@@ -1,7 +1,7 @@
-var wReader = angular.module('wReader', ['wReader.filters', 'wReader.services', 'wReader.directives']);
+var wReader = angular.module('wReader', ['wReader.filters', 'wReader.services', 'wReader.directives', 'wReader.store']);
 
 
-function AppController($scope, items, scroll) {
+function AppController($scope, items, scroll, store) {
 
   $scope.items = items;
 

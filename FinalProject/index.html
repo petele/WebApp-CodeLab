@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body ng-controller="AppController" class="ng-cloak" w-keydown w-space="handleSpace()"
+<body ng-controller="AppController" ng-cloak w-keydown w-space="handleSpace()"
       w-down="items.next()" w-up="items.prev()" w-read="toggleRead()" w-star="toggleStar()" >
   <header>
 
@@ -20,13 +20,13 @@
           </a>
           <ul class="nav">
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showAll()">{{items.allCount()}} Items</a></li>
+            <li class="itemCount"><a ng-click="showAll()">{{items.all.length}} Items</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showUnread()">{{items.unreadCount()}} Unread</a></li>
+            <li class="itemCount"><a ng-click="showUnread()">{{items.all.length - items.readCount}} Unread</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showStarred()">{{items.starredCount()}} Starred</a></li>
+            <li class="itemCount"><a ng-click="showStarred()">{{items.starredCount}} Starred</a></li>
             <li class="divider-vertical"></li>
-            <li class="itemCount"><a ng-click="showRead()">{{items.readCount()}} Read</a></li>
+            <li class="itemCount"><a ng-click="showRead()">{{items.readCount}} Read</a></li>
             <li class="divider-vertical"></li>
           </ul>
           <form class="navbar-search pull-left" id="navSearch">
@@ -70,7 +70,10 @@
     </section>
 
     <section class="summaries">
-      <article ng-repeat="item in items.filtered | filter: search | orderBy: '-pub_date'" id="{{item.item_id}}" ng-class="{read: item.read, active: item.selected}" class="well summary" ng-click="items.selectItem($index)">
+      <article ng-repeat="item in items.filtered | filter: search"
+               id="{{item.item_id}}"
+               ng-class="{read: item.read, active: item.selected}" class="well summary"
+               ng-click="items.selectItem($index)">
         <div class="row-fluid" >
           <div class="span6 pub-name">
             {{item.pub_name}}
@@ -85,7 +88,7 @@
 
     <section class="entries">
 
-      <article class="well entry" ng-class="{read: items.selected.read, active: items.selected.selected}" ng-hide="!items.selected">
+      <article class="well entry active" ng-class="{read: items.selected.read}" ng-show="items.selected">
         <div class="row-fluid">
           <div class="span8">{{items.selected.pub_date | formattedDate}}</div>
             <div class="span4 actions">
@@ -126,6 +129,7 @@
   <script src="js/libs/angular-1.0.1-ffb27013.min.js"></script>
   <script src="js/libs/moment-1.4.0.min.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/store.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/services.js"></script>
   <script src="js/directives.js"></script>

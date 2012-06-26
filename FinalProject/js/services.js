@@ -1,119 +1,57 @@
 var services = angular.module('wReader.services', []);
 
-
-
-function getLink(links, rel) {
-  for (var i = 0, link; link = links[i]; ++i) {
-    if (link.rel === rel) {
-      return link.href;
-    }
-  }
-  return null;
-};
-
-
 function Item(entry, pub_name, feed_link) {
   this.read = false;
   this.starred = false;
   this.selected = false;
-
-  // parse the entry from JSON
-  if (entry) {
-    this.title = entry.title.$t;
-    this.item_id = entry.id.$t;
-    this.pub_name = pub_name; // Set the pub name to the feed's title.
-    this.pub_author = entry.author[0].name.$t;
-    this.pub_date = new Date(entry.published.$t);
-    this.item_link = getLink(entry.link, 'alternate');
-    this.feed_link = feed_link;
-    this.content = entry.content.$t;
-    this.short_desc = this.content.substr(0, 128) + '...';
-  }
 }
 
 
-// Create or open the data store where objects are stored for offline use
-services.factory('store', ['$timeout', function($timeout) {
-  return {
-    all: function(fn) {
-      $timeout(function() {
-        fn([]);
-      });
-    },
-    save: function(entry) {},
-    toggleRead: function(entryId, read) {},
-    toggleStar: function(entryId, starred) {}
-  };
-}]);
-
-
-services.factory('items', ['$http', 'store', 'filterFilter', function($http, store, filter) {
+services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
   var items = {
     all: [],
     filtered: [],
     selected: null,
     selectedIdx: null,
-
-
-    addItem: function(item) {
-      // It's already in the data controller, so we won't re-add it.
-      if (items.all.some(function(val) {
-        return val.item_id == item.item_id;
-      })) return false;
-
-      // If no results are returned, we insert the new item into the data
-      // controller in order of publication date
-      items.all.push(item);
-      return true;
-    },
+    readCount: 0,
+    starredCount: 0,
 
 
     getItemsFromDataStore: function() {
-      // Get all items from the local data store.
-      // We're using store.all because store.each returns async, and the
-      // method will return before we've pulled all the items out.  Then
-      // there is a strong likelihood of getItemsFromServer stomping on
-      // local items.
-      store.all(function(arr) {
-        arr.forEach(function(entry) {
-          var item = new Item();
-          angular.extend(item, entry);
-          items.addItem(item);
+      feedStore.getAll().then(function(feeds) {
+        var i = 0;
+
+        angular.forEach(feeds, function(feed) {
+          angular.forEach(feed.entries, function(entry) {
+            var item = new Item();
+
+            angular.extend(item, {
+              read: entry.read,
+              starred: entry.starred,
+              title: entry.title,
+              item_id: entry.id,
+              pub_name: feed.title,
+              pub_author: entry.author,
+              pub_date: entry.date,
+              item_link: entry.url,
+              feed_link: feed.url,
+              content: entry.content
+            });
+
+            items.all.push(item);
+            i++;
+          });
+          console.log("Entries loaded from local data store:", i);
+
+          items.all.sort(function(entryA, entryB) {
+            return new Date(entryB.pub_date).getTime() - new Date(entryA.pub_date).getTime();
+          });
+
+          items.filtered = items.all;
+          items.readCount = items.all.reduce(function(count, item) { return item.read ? ++count : count; }, 0);
+          items.starredCount = items.all.reduce(function(count, item) { return item.starred ? ++count : count; }, 0);
         });
-
-        console.log("Entries loaded from local data store:", arr.length);
-
-        // Load items from the server after we've loaded everything from the local
-        // data store.
-        items.getItemsFromServer();
       });
-    },
-
-
-    getItemsFromServer: function() {
-      var feedURL = 'http://blog.chromium.org/feeds/posts/default?alt=json';
-
-      var successCallback = function(data, status, headers, config) {
-        items.all = [];
-
-        // Iterate through the items and create a new JSON object for each item
-        data.feed.entry.forEach(function(entry) {
-          var item = new Item(entry, data.feed.title.$t, getLink(data.feed.link, 'alternate'));
-
-          // Try to add the item to the data controller, if it's successfully
-          //  added, we get TRUE and add the item to the local data store,
-          //  otherwise it's likely already in the local data store.
-          if (items.addItem(item)) {
-            store.save(angular.copy(item));
-          }
-        });
-
-        items.filtered = items.all;
-
-        console.log('Entries loaded from server:', items.all.length);
-      };
-
-      $http.get(feedURL).success(successCallback);
     },
 
 
@@ -166,7 +104,8 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
       var read = opt_read || !item.read;
 
       item.read = read;
-      store.toggleRead(item.item_id, read);
+      feedStore.toggleRead(item.feed_link, item.item_id, read);
+      items.readCount += read ? 1 : -1;
     },
 
 
@@ -175,20 +114,22 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
       var star = opt_star || !item.starred;
 
       item.starred = star;
-      store.toggleStar(item.item_id, star);
+      feedStore.toggleStar(item.feed_link, item.item_id, star);
+      items.starredCount += star ? 1 : -1;
     },
 
 
     markAllRead: function() {
       items.filtered.forEach(function(item) {
         item.read = true;
-        store.toggleRead(item.item_id, true);
+        feedStore.toggleRead(item.feed_link, item.item_id, true);
       });
+      items.readCount -= items.filtered.length;
     },
 
 
     filterBy: function(key, value) {
-      items.filtered = filter(items.all, function(item) {
+      items.filtered = items.all.filter(function(item) {
         return item[key] === value;
       });
       items.reindexSelectedItem();
@@ -214,26 +155,6 @@ services.factory('items', ['$http', 'store', 'filterFilter', function($http, sto
           items.selectedIdx = idx;
         }
       }
-    },
-
-
-    allCount: function() {
-      return items.all.length;
-    },
-
-
-    readCount: function() {
-      return items.all.filter(function(val, i) { return val.read }).length;
-    },
-
-
-    unreadCount: function() {
-      return items.all.length - items.readCount();
-    },
-
-
-    starredCount: function() {
-      return items.all.filter(function(val, i) { return val.starred }).length;
     }
   };
 

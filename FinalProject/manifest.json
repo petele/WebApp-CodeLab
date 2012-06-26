@@ -4,12 +4,14 @@
   "manifest_version": 2,
   "app": {
     "background": {
-      "scripts": ["js/background.js"]
+      "scripts": ["js/libs/angular-1.0.1-ffb27013.js", "js/store.js", "js/background.js"]
     }
   },
   "permissions": [
     "experimental",
     "appWindow",
+    "storage",
+    "unlimitedStorage",
     "*://blog.chromium.org/feeds/*"
   ],
   "sandbox": {
