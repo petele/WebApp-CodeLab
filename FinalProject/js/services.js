@@ -21,6 +21,8 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
       feedStore.getAll().then(function(feeds) {
         var i = 0;
 
+        items.all = [];
+
         angular.forEach(feeds, function(feed) {
           angular.forEach(feed.entries, function(entry) {
             var item = new Item();
@@ -35,7 +37,10 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
               pub_date: entry.date,
               item_link: entry.url,
               feed_link: feed.url,
-              content: entry.content
+              content: entry.content,
+              $$hashKey: function() {
+                return this.id;
+              }
             });
 
             items.all.push(item);
@@ -50,6 +55,10 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
           items.filtered = items.all;
           items.readCount = items.all.reduce(function(count, item) { return item.read ? ++count : count; }, 0);
           items.starredCount = items.all.reduce(function(count, item) { return item.starred ? ++count : count; }, 0);
+          items.selected = items.selected
+              ? items.all.filter(function(item) { return item.item_id == items.selected.item_id; })[0]
+              : null;
+          items.reindexSelectedItem();
         });
       });
     },
@@ -153,6 +162,7 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
           items.selectedIdx = null;
         } else {
           items.selectedIdx = idx;
+          items.selected.selected = true;
         }
       }
     }
@@ -185,7 +195,7 @@ services.value('scroll', {
       var curScrollPos = $('.summaries').scrollTop();
       var itemTop = $('.summary.active').offset().top - 60;
       $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
-      $('.entries').animate({'scrollTop': 0}, 200);
+      $('.entries article.active')[0].scrollIntoView();
     }, 0);
   }
 });

@@ -1,48 +1,5 @@
 var storeModule = angular.module('wReader.store', []);
 
-
-storeModule.factory('stateStore', function($q, $rootScope) {
-  var syncStorage = chrome.storage.sync;
-
-  function setEntryProp(entryUrl, propName, propValue) {
-    syncStorage.get(entryUrl, function(storageObj) {
-      if (!storageObj[entryUrl]) storageObj[entryUrl] = {};
-      storageObj[entryUrl][propName] = propValue;
-      syncStorage.set(storageObj);
-    });
-  }
-
-  return {
-    addFeed: function(feedUrl) {
-      var deferred = $q.defer();
-
-      syncStorage.get('feeds', function(storageObj) {
-        storageObj.feeds.push(feedUrl);
-        syncStorage.set(storageObj);
-        deferred.resolve();
-        if (!$rootScope.$$phase) $rootScope.$apply();
-      });
-
-      return deferred.promise;
-    },
-
-    setRead: function(entryUrl, read) {
-      setEntryProp(entryUrl, 'read', read);
-    },
-
-    setStarred: function(entryUrl, read) {
-      setEntryProp(entryUrl, 'starred', read);
-    }
-  }
-});
-
-
-storeModule.factory('contentStore', function() {
-
-
-});
-
-
 storeModule.factory('feedStore', function($q, $rootScope) {
   var stateStorage = chrome.storage.sync,
       contentStorage = chrome.storage.local,
@@ -101,16 +58,18 @@ storeModule.factory('feedStore', function($q, $rootScope) {
         feed.title = updatedFeed.title;
         angular.forEach(updatedFeed.entries, function(entry, entryId) {
           if (feed.entries[entryId]) {
-            entry.read = feed.entries[entryId];
-            entry.starred = feed.entries[entryId];
+            entry.read = feed.entries[entryId].read;
+            entry.starred = feed.entries[entryId].starred;
           }
           feed.entries[entryId] = entry;
         });
 
 
-        syncStorages(feeds, getFeedsFrom(stateStorage)).then(function(feeds) {
-          deferred.resolve(feeds);
-          if (!$rootScope.$$phase) $rootScope.$apply();
+        getFeedsFrom(stateStorage).then(function(feedStates) {
+          syncStorages(feeds, feedStates).then(function(feeds) {
+            deferred.resolve(feeds);
+            if (!$rootScope.$$phase) $rootScope.$apply();
+          });
         });
       });
 
@@ -120,13 +79,13 @@ storeModule.factory('feedStore', function($q, $rootScope) {
 
     updateEntryProp: function(feedUrl, entryId, propName, propValue) {
       getFeedsFrom(contentStorage).then(function(feeds) {
-        feeds[feedUrl].entries[entryId][propName] = val;
+        feeds[feedUrl].entries[entryId][propName] = propValue;
         contentStorage.set({feeds: feeds});
       });
       getFeedsFrom(stateStorage).then(function(feeds) {
         if (!feeds[feedUrl]) feeds[feedUrl] = {entries:{}};
         if (!feeds[feedUrl].entries[entryId]) feeds[feedUrl].entries[entryId] = {};
-        feeds[feedUrl].entries[entryId][propName] = val;
+        feeds[feedUrl].entries[entryId][propName] = propValue;
         stateStorage.set({feeds: feeds}, function() {
           console.log('updated sync storage with', feeds);
         });
@@ -143,7 +102,7 @@ storeModule.factory('feedStore', function($q, $rootScope) {
       if (!syncInProgress) {
         syncInProgress = true;
 
-        $q.all([getFeedsFrom(contentStorage), getFeedsFrom(stateStorage)]).then(function(results) {
+        return $q.all([getFeedsFrom(contentStorage), getFeedsFrom(stateStorage)]).then(function(results) {
 
           syncStorages(results[0], results[1]).then(function() {
             syncInProgress = false;

@@ -2,7 +2,7 @@ var exp = chrome.experimental,
     bg = angular.module('wReader.bg', []),
     FEED_URL = 'http://blog.chromium.org/feeds/posts/default?alt=json';
 
-bg.run(function(refreshFeeds) {
+bg.run(function(refreshFeeds, feedStore) {
   exp.app.onLaunched.addListener(function() {
     chrome.appWindow.create('../index.html', {
       width: 900,
@@ -13,22 +13,27 @@ bg.run(function(refreshFeeds) {
   });
 
   chrome.extension.onMessage.addListener(function(request) {
-    if (request == "refreshFeeds") {
-       refreshFeeds();
+    if (request == 'refreshFeeds') {
+      refreshFeeds().then(notifyApp);
     }
   });
 
   // sync data changes that happened while we were offline
-  feedStore.sync();
+  feedStore.sync().then(function() {
+    // listen for changes in the cloud and sync them into local store
+    feedStore.keepInSync();
 
-  // listen for changes in the cloud and sync them into local store
-  feedStore.keepInSync();
-
+    refreshFeeds();
+  });
 
   chrome.alarms.create('fetchFeeds', {periodInMinutes: 5});
   chrome.alarms.onAlarm.addListener(function(alarm) {
-    if (alarm.name == "refreshFeeds") refreshFeeds();
+    if (alarm.name == 'refreshFeeds') refreshFeeds().then(notifyApp);
   });
+
+  function notifyApp() {
+    chrome.extension.sendMessage('feedsUpdated');
+  }
 });
 
 
@@ -77,10 +82,8 @@ bg.factory('fetchFeed', function($http) {
 
 bg.factory('refreshFeeds', function(fetchFeed, feedStore) {
   return function() {
-    fetchFeed(FEED_URL).then(function(feed) {
-      feedStore.updateFeed(feed).then(function() {
-
-      });
+    return fetchFeed(FEED_URL).then(function(feed) {
+      return feedStore.updateFeed(feed);
     });
   };
 });
