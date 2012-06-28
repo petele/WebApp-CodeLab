@@ -127,7 +127,7 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
         item.read = true;
         feedStore.updateEntryProp(item.feedUrl, item.id, 'read', true);
       });
-      items.readCount -= items.filtered.length;
+      items.readCount = items.filtered.length;
     },
 
 
