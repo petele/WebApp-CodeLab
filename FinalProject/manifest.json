@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "app": {
     "background": {
-      "scripts": ["js/libs/angular-1.0.1-ffb27013.js", "js/store.js", "js/background.js"]
+      "scripts": ["js/libs/angular-1.0.1.min.js", "js/store.js", "js/background.js"]
     }
   },
   "permissions": [
