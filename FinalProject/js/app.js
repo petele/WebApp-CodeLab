@@ -18,14 +18,6 @@ function AppController($scope, items, scroll, bgPage) {
   $scope.$watch('items.selectedIdx', function(newVal) {
     if (newVal !== null) scroll.toCurrent();
   });
-
-  $scope.$watch('items.selected.read', function(newVal) {
-    if (angular.isDefined(newVal)) items.toggleRead(newVal);
-  });
-
-  $scope.$watch('items.selected.starred', function(newVal) {
-    if (angular.isDefined(newVal)) items.toggleStarred(newVal);
-  });
 }
 
 

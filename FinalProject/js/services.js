@@ -95,38 +95,34 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
       items.selectedIdx = idx;
       items.selected.selected = true;
 
-      items.toggleRead(true);
+      if (!items.selected.read) items.toggleRead();
     },
 
 
-    toggleRead: function(opt_read) {
-      var item = items.selected;
-      var read = opt_read || !item.read;
+    toggleRead: function() {
+      var item = items.selected,
+          read = !item.read;
 
-      if (read !== item.read) {
-        item.read = read;
-        feedStore.toggleRead(item.feed_link, item.item_id, read);
-        items.readCount += read ? 1 : -1;
-      }
+      item.read = read;
+      feedStore.updateEntryProp(item.feed_link, item.item_id, 'read', read);
+      items.readCount += read ? 1 : -1;
     },
 
 
-    toggleStarred: function(opt_star) {
-      var item = items.selected;
-      var star = opt_star || !item.starred;
+    toggleStarred: function() {
+      var item = items.selected,
+          starred = !item.starred;
 
-      if (star !== item.starred) {
-        item.starred = star;
-        feedStore.toggleStarred(item.feed_link, item.item_id, star);
-        items.starredCount += star ? 1 : -1;
-      }
+      item.starred = starred;
+      feedStore.updateEntryProp(item.feed_link, item.item_id, 'starred', starred);
+      items.starredCount += starred ? 1 : -1;
     },
 
 
     markAllRead: function() {
       items.filtered.forEach(function(item) {
         item.read = true;
-        feedStore.toggleRead(item.feed_link, item.item_id, true);
+        feedStore.updateEntryProp(item.feed_link, item.item_id, 'read', true);
       });
       items.readCount -= items.filtered.length;
     },
@@ -189,6 +185,7 @@ services.value('scroll', {
       var curScrollPos = $('.summaries').scrollTop();
       var itemTop = $('.summary.active').offset().top - 60;
       $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
+      $('.entries').animate({'scrollTop': 0}, 200);
     }, 0);
   }
 });
@@ -199,5 +196,5 @@ services.factory('bgPage', function() {
     refreshFeeds: function() {
       chrome.extension.sendMessage('refreshFeeds');
     }
-  }
+  };
 });

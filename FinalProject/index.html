@@ -92,8 +92,12 @@
         <div class="row-fluid">
           <div class="span8">{{items.selected.pub_date | formattedDate}}</div>
             <div class="span4 actions">
-              <input type="checkbox" class="read" ng-model="items.selected.read">
-              <input type="checkbox" class="star" ng-model="items.selected.starred">
+              <a ng-click="items.toggleStarred()">
+                <i ng-class="{'icon-star': items.selected.starred, 'icon-star-empty': !items.selected.starred}"></i>
+              </a>
+              <a ng-click="items.toggleRead()">
+                <i ng-class="{'icon-ok-sign': items.selected.read, 'icon-ok-circle': !items.selected.read}"></i>
+              </a>
               <a href="{{items.selected.item_link}}" target="_blank"><i class="icon-share"></i></a>
             </div>
           </div>

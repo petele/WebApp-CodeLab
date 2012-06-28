@@ -18,6 +18,12 @@ bg.run(function(refreshFeeds) {
     }
   });
 
+  // sync data changes that happened while we were offline
+  feedStore.sync();
+
+  // listen for changes in the cloud and sync them into local store
+  feedStore.keepInSync();
+
 
   chrome.alarms.create('fetchFeeds', {periodInMinutes: 5});
   chrome.alarms.onAlarm.addListener(function(alarm) {
@@ -73,7 +79,7 @@ bg.factory('refreshFeeds', function(fetchFeed, feedStore) {
   return function() {
     fetchFeed(FEED_URL).then(function(feed) {
       feedStore.updateFeed(feed).then(function() {
-        feedStore.sync();
+
       });
     });
   };
