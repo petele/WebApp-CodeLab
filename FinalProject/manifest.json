@@ -12,6 +12,7 @@
     "appWindow",
     "storage",
     "unlimitedStorage",
+    "alarms",
     "*://blog.chromium.org/feeds/*"
   ],
   "sandbox": {

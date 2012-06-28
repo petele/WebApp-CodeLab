@@ -1,5 +1,47 @@
 var storeModule = angular.module('wReader.store', []);
 
+
+storeModule.factory('stateStore', function($q) {
+  var syncStorage = chrome.storage.sync;
+
+  function setEntryProp(entryUrl, propName, propValue) {
+    syncStorage.get(entryUrl, function(storageObj) {
+      if (!storageObj[entryUrl]) storageObj[entryUrl] = {};
+      storageObj[entryUrl][propName] = propValue;
+      syncStorage.set(storageObj);
+    });
+  }
+
+  return {
+    addFeed: function(feedUrl) {
+      var deferred = $q.defer();
+
+      syncStorage.get('feeds', function(storageObj) {
+        storageObj.feeds.push(feedUrl);
+        syncStorage.set(storageObj);
+        deferred.resolve();
+      });
+
+      return deferred.promise;
+    },
+
+    setRead: function(entryUrl, read) {
+      setEntryProp(entryUrl, 'read', read);
+    },
+
+    setStarred: function(entryUrl, read) {
+      setEntryProp(entryUrl, 'starred', read);
+    }
+  }
+});
+
+
+storeModule.factory('contentStore', function() {
+
+
+});
+
+
 storeModule.factory('feedStore', function($q, $rootScope) {
   var stateStorage = chrome.storage.sync,
       contentStorage = chrome.storage.local,
@@ -25,9 +67,33 @@ storeModule.factory('feedStore', function($q, $rootScope) {
       if (!feeds[feedUrl]) feeds[feedUrl] = {entries:{}};
       if (!feeds[feedUrl].entries[entryId]) feeds[feedUrl].entries[entryId] = {};
       feeds[feedUrl].entries[entryId][prop] = val;
+      console.log('updating sync storage with', feeds);
       stateStorage.set({feeds: feeds});
     });
   }
+
+
+  chrome.storage.onChanged.addListener(function(diff, namespace) {
+    if (namespace != 'sync') return;
+
+    console.log('sync storage changed', diff);
+
+    getFeedsFrom(contentStorage).then(function(feedContents) {
+      angular.forEach(diff.feeds.newValue, function(feed, feedUrl) {
+        angular.forEach(feed.entries, function(entryDiff, entryId) {
+          var entry;
+
+          if (feedContents[feedUrl] && (entry = feedContents[feedUrl].entries[entryId])) {
+            angular.forEach(entryDiff, function(propVal, propName) {
+              entry[propName] = propVal;
+            });
+          }
+        });
+      });
+      contentStorage.set({feeds: feedContents});
+    });
+  });
+
 
   return {
     updateFeed: function(updatedFeed) {
@@ -71,9 +137,9 @@ storeModule.factory('feedStore', function($q, $rootScope) {
 
 
     sync: function() {
-      syncing = !syncing;
+      if (!syncing) {
+        syncing = true;
 
-      if (syncing) {
         $q.all([getFeedsFrom(contentStorage), getFeedsFrom(stateStorage)]).then(function(results) {
           var feedContents = results[0],
               feedStates = results[1],
@@ -95,22 +161,9 @@ storeModule.factory('feedStore', function($q, $rootScope) {
           }
 
           console.log('feeds state synced');
-          contentStorage.set({feeds: feedContents});
-
-          chrome.storage.onChanged.addListener(function(diff, namespace) {
-            if (namespace != 'sync') return;
-
-            angular.forEach(diff.feeds.newValue, function(feed) {
-              angular.forEach(feed.entries, function(entry, entryId) {
-                angular.forEach(entry, function(propDiff, propName) {
-                  entry[propName] = propDiff.newValue;
-                });
-              });
-            });
-
-            contentStorage.set(feed);
+          contentStorage.set({feeds: feedContents}, function() {
+            syncing = false;
           });
-
         });
       }
     }

@@ -1,12 +1,12 @@
 var wReader = angular.module('wReader', ['wReader.filters', 'wReader.services', 'wReader.directives', 'wReader.store']);
 
 
-function AppController($scope, items, scroll, store) {
+function AppController($scope, items, scroll, bgPage) {
 
   $scope.items = items;
 
   $scope.refresh = function() {
-    items.getItemsFromServer();
+    bgPage.refreshFeeds();
   };
 
   $scope.handleSpace = function() {
@@ -18,9 +18,15 @@ function AppController($scope, items, scroll, store) {
   $scope.$watch('items.selectedIdx', function(newVal) {
     if (newVal !== null) scroll.toCurrent();
   });
-}
 
-AppController.$inject = ['$scope', 'items', 'scroll']; // For JS compilers.
+  $scope.$watch('items.selected.read', function(newVal) {
+    if (angular.isDefined(newVal)) items.toggleRead(newVal);
+  });
+
+  $scope.$watch('items.selected.starred', function(newVal) {
+    if (angular.isDefined(newVal)) items.toggleStarred(newVal);
+  });
+}
 
 
 // Top Menu/Nav Bar
@@ -42,5 +48,3 @@ function NavBarController($scope, items) {
     items.filterBy('read', true);
   };
 }
-
-NavBarController.$inject = ['$scope', 'items'];  // For JS compilers.

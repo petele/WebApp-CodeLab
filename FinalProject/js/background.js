@@ -2,7 +2,7 @@ var exp = chrome.experimental,
     bg = angular.module('wReader.bg', []),
     FEED_URL = 'http://blog.chromium.org/feeds/posts/default?alt=json';
 
-bg.run(function(fetchFeed, feedStore) {
+bg.run(function(refreshFeeds) {
   exp.app.onLaunched.addListener(function() {
     chrome.appWindow.create('../index.html', {
       width: 900,
@@ -12,10 +12,16 @@ bg.run(function(fetchFeed, feedStore) {
     });
   });
 
-  fetchFeed(FEED_URL).then(function(feed) {
-    feedStore.updateFeed(feed).then(function() {
-      feedStore.sync();
-    });
+  chrome.extension.onMessage.addListener(function(request) {
+    if (request == "refreshFeeds") {
+       refreshFeeds();
+    }
+  });
+
+
+  chrome.alarms.create('fetchFeeds', {periodInMinutes: 5});
+  chrome.alarms.onAlarm.addListener(function(alarm) {
+    if (alarm.name == "refreshFeeds") refreshFeeds();
   });
 });
 
@@ -62,6 +68,16 @@ bg.factory('fetchFeed', function($http) {
   }
 });
 
+
+bg.factory('refreshFeeds', function(fetchFeed, feedStore) {
+  return function() {
+    fetchFeed(FEED_URL).then(function(feed) {
+      feedStore.updateFeed(feed).then(function() {
+        feedStore.sync();
+      });
+    });
+  };
+});
 
 
 // bootstrap the app

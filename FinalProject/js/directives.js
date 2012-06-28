@@ -46,13 +46,23 @@ directives.directive('wKeydown', function() {
 directives.directive('wContent', function() {
   return {
     restrict: 'E',
-    template: '<iframe src="post-content.html" seamless></iframe>',
+    template: '<iframe src="post-content.html" seamless class="post-content"></iframe>',
     link: function($scope, $element, attrs) {
       var iframeWindow = $element.find('iframe')[0].contentWindow;
 
       $scope.$watch(attrs.src, function(content) {
-        iframeWindow.postMessage(content, '*');
+        iframeWindow.postMessage({type: 'loadContent', content: content}, '*');
       });
+
+      window.addEventListener('message', function(event) {
+        if (event.data.type != 'openUrl') return;
+
+        var linkElem = angular.element('<a href="' + event.data.url + '" target="_blank"></a>')[0],
+            event = document.createEvent('MouseEvents');
+
+        event.initMouseEvent('click', true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, linkElem);
+        linkElem.dispatchEvent(event);
+      }, false);
     }
   }
 });

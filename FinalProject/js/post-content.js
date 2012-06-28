@@ -1,3 +1,17 @@
 window.addEventListener('message', function(event) {
-  document.body.innerHTML = event.data;
+  if (event.data.type != 'loadContent') return;
+
+  document.body.innerHTML = event.data.content;
+
+  getAllLinks().forEach(function(node) {
+    node.addEventListener('click', function(e) {
+      e.preventDefault();
+      window.parent.postMessage({type: 'openUrl', url: node.href}, '*');
+    }, false);
+  });
 }, false);
+
+
+function getAllLinks() {
+  return [].splice.call(document.querySelectorAll('a[href]'), 0);
+}
