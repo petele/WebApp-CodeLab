@@ -46,6 +46,29 @@ storeModule.factory('feedStore', function($q, $rootScope) {
           if (entryState) {
             entry.read =  entryState.read || false;
             entry.starred = entryState.starred || false;
+          } else {
+            entry.read = false;
+            entry.starred = false;
+          }
+        });
+      }
+    }
+
+    for (feedUrl in feedContents) {
+      feedContent = feedContents[feedUrl];
+      feedState = feedStates[feedUrl];
+
+      if (!feedState) {
+        angular.forEach(feedContent.entries, function(entry) {
+          entry.read = false;
+          entry.starred = false;
+        });
+      } else {
+        angular.forEach(feedContent.entries, function(entry, entryId) {
+          entryState = feedState.entries[entryId];
+          if (!entryState) {
+            entry.read = false;
+            entry.starred = false;
           }
         });
       }
