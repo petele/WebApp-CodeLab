@@ -1,9 +1,17 @@
 var services = angular.module('wReader.services', []);
 
-function Item(entry, pub_name, feed_link) {
+function Item(entry, feedTitle, feedUrl) {
   this.read = false;
   this.starred = false;
   this.selected = false;
+  this.feedTitle = feedTitle;
+  this.feedUrl = feedUrl;
+
+  angular.extend(this, entry);
+}
+
+Item.prototype.$$hashKey = function() {
+  return this.id;
 }
 
 
@@ -28,38 +36,21 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
 
         angular.forEach(feeds, function(feed) {
           angular.forEach(feed.entries, function(entry) {
-            var item = new Item();
-
-            angular.extend(item, {
-              read: entry.read,
-              starred: entry.starred,
-              title: entry.title,
-              item_id: entry.id,
-              pub_name: feed.title,
-              pub_author: entry.author,
-              pub_date: entry.date,
-              item_link: entry.url,
-              feed_link: feed.url,
-              content: entry.content,
-              $$hashKey: function() {
-                return this.id;
-              }
-            });
-
+            var item = new Item(entry, feed.title, feed.url);
             items.all.push(item);
             i++;
           });
           console.log("Entries loaded from local data store:", i);
 
           items.all.sort(function(entryA, entryB) {
-            return new Date(entryB.pub_date).getTime() - new Date(entryA.pub_date).getTime();
+            return new Date(entryB.date).getTime() - new Date(entryA.date).getTime();
           });
 
           items.filtered = items.all;
           items.readCount = items.all.reduce(function(count, item) { return item.read ? ++count : count; }, 0);
           items.starredCount = items.all.reduce(function(count, item) { return item.starred ? ++count : count; }, 0);
           items.selected = items.selected
-              ? items.all.filter(function(item) { return item.item_id == items.selected.item_id; })[0]
+              ? items.all.filter(function(item) { return item.id == items.selected.id; })[0]
               : null;
           items.reindexSelectedItem();
         });
@@ -116,7 +107,7 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
           read = !item.read;
 
       item.read = read;
-      feedStore.updateEntryProp(item.feed_link, item.item_id, 'read', read);
+      feedStore.updateEntryProp(item.feedUrl, item.id, 'read', read);
       items.readCount += read ? 1 : -1;
     },
 
@@ -126,7 +117,7 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
           starred = !item.starred;
 
       item.starred = starred;
-      feedStore.updateEntryProp(item.feed_link, item.item_id, 'starred', starred);
+      feedStore.updateEntryProp(item.feedUrl, item.id, 'starred', starred);
       items.starredCount += starred ? 1 : -1;
     },
 
@@ -134,7 +125,7 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
     markAllRead: function() {
       items.filtered.forEach(function(item) {
         item.read = true;
-        feedStore.updateEntryProp(item.feed_link, item.item_id, 'read', true);
+        feedStore.updateEntryProp(item.feedUrl, item.id, 'read', true);
       });
       items.readCount -= items.filtered.length;
     },

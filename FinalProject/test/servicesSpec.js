@@ -28,11 +28,11 @@ describe('services', function() {
         expect(items.all.length).toBe(25);
 
         // returns true if added
-        expect(items.addItem({item_id: 'fake-id'})).toBe(true);
+        expect(items.addItem({id: 'fake-id'})).toBe(true);
         expect(items.all.length).toBe(26);
 
         // returns false if not added
-        expect(items.addItem({item_id: 'fake-id'})).toBe(false);
+        expect(items.addItem({id: 'fake-id'})).toBe(false);
         expect(items.all.length).toBe(26);
       });
     });

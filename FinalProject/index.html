@@ -71,15 +71,15 @@
 
     <section class="summaries">
       <article ng-repeat="item in items.filtered | filter: search"
-               id="{{item.item_id}}"
+               id="{{item.id}}"
                ng-class="{read: item.read, active: item.selected}" class="well summary"
                ng-click="items.selectItem($index)">
         <div class="row-fluid" >
           <div class="span6 pub-name">
-            {{item.pub_name}}
+            {{item.feedTitle}}
           </div>
           <div class="span6 pub-date">
-            {{item.pub_date | formattedDate}}
+            {{item.date | formattedDate}}
           </div>
         </div>
         <h3 class="pub-title">{{item.title}}</h3>
@@ -90,7 +90,7 @@
 
       <article class="well entry active" ng-class="{read: items.selected.read}" ng-show="items.selected">
         <div class="row-fluid">
-          <div class="span8">{{items.selected.pub_date | formattedDate}}</div>
+          <div class="span8">{{items.selected.date | formattedDate}}</div>
             <div class="span4 actions">
               <a ng-click="items.toggleStarred()">
                 <i ng-class="{'icon-star': items.selected.starred, 'icon-star-empty': !items.selected.starred}"></i>
@@ -98,11 +98,11 @@
               <a ng-click="items.toggleRead()">
                 <i ng-class="{'icon-ok-sign': items.selected.read, 'icon-ok-circle': !items.selected.read}"></i>
               </a>
-              <a href="{{items.selected.item_link}}" target="_blank"><i class="icon-share"></i></a>
+              <a href="{{items.selected.url}}" target="_blank"><i class="icon-share"></i></a>
             </div>
           </div>
           <h2>{{items.selected.title}}</h2>
-          <span class="author">{{items.selected.pub_author}}</span> - <span class="pub-name">{{items.selected.pub_name}}</span>
+          <span class="author">{{items.selected.author}}</span> - <span class="pub-name">{{items.selected.feedTitle}}</span>
           <hr />
           <w-content src="items.selected.content"></w-content>
         </div>
