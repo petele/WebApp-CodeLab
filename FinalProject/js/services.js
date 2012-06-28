@@ -7,6 +7,9 @@ function Item(entry, pub_name, feed_link) {
 }
 
 
+/**
+ * ViewModel service representing all feed entries the state of the UI.
+ */
 services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
   var items = {
     all: [],
@@ -169,40 +172,52 @@ services.factory('items', ['$http', 'feedStore', function($http, feedStore) {
   };
 
   items.getItemsFromDataStore();
+
   return items;
 }]);
 
 
-services.value('scroll', {
-  pageDown: function() {
-    var itemHeight = $('.entry.active').height() + 60;
-    var winHeight = $(window).height();
-    var curScroll = $('.entries').scrollTop();
-    var scroll = curScroll + winHeight;
+/**
+ * Service that is in charge of scrolling in the app.
+ */
+services.factory('scroll', function($timeout) {
+  return {
+    pageDown: function() {
+      var itemHeight = $('.entry.active').height() + 60;
+      var winHeight = $(window).height();
+      var curScroll = $('.entries').scrollTop();
+      var scroll = curScroll + winHeight;
 
-    if (scroll < itemHeight) {
-      $('.entries').scrollTop(scroll);
-      return true;
+      if (scroll < itemHeight) {
+        $('.entries').scrollTop(scroll);
+        return true;
+      }
+
+      // already at the bottom
+      return false;
+    },
+
+    toCurrent: function() {
+      // Need the setTimeout to prevent race condition with item being selected.
+      $timeout(function() {
+        var curScrollPos = $('.summaries').scrollTop();
+        var itemTop = $('.summary.active').offset().top - 60;
+        $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
+        $('.entries article.active')[0].scrollIntoView();
+      }, 0, false);
     }
-
-    // already at the bottom
-    return false;
-  },
-
-  toCurrent: function() {
-    // Need the setTimeout to prevent race condition with item being selected.
-    window.setTimeout(function() {
-      var curScrollPos = $('.summaries').scrollTop();
-      var itemTop = $('.summary.active').offset().top - 60;
-      $('.summaries').animate({'scrollTop': curScrollPos + itemTop}, 200);
-      $('.entries article.active')[0].scrollIntoView();
-    }, 0);
-  }
+  };
 });
 
 
+/**
+ * Background page service.
+ */
 services.factory('bgPage', function() {
   return {
+    /**
+     * Initiates feed refresh.
+     */
     refreshFeeds: function() {
       chrome.extension.sendMessage('refreshFeeds');
     }

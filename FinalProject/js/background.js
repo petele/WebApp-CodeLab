@@ -1,9 +1,8 @@
-var exp = chrome.experimental,
-    bg = angular.module('wReader.bg', []),
+var bg = angular.module('wReader.bg', []),
     FEED_URL = 'http://blog.chromium.org/feeds/posts/default?alt=json';
 
 bg.run(function(refreshFeeds, feedStore) {
-  exp.app.onLaunched.addListener(function() {
+  chrome.experimental.app.onLaunched.addListener(function() {
     chrome.appWindow.create('../index.html', {
       width: 900,
       height: 700,
@@ -80,6 +79,9 @@ bg.factory('fetchFeed', function($http) {
 });
 
 
+/**
+ * Fetches the hardcoded feed and updates the feed store with the new content.
+ */
 bg.factory('refreshFeeds', function(fetchFeed, feedStore) {
   return function() {
     return fetchFeed(FEED_URL).then(function(feed) {
@@ -89,5 +91,5 @@ bg.factory('refreshFeeds', function(fetchFeed, feedStore) {
 });
 
 
-// bootstrap the app
+// bootstrap the background page app
 injector = angular.injector(['wReader.bg', 'wReader.store', 'ng']);

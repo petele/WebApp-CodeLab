@@ -3,6 +3,8 @@ window.addEventListener('message', function(event) {
 
   document.body.innerHTML = event.data.content;
 
+  // we have to intercept all link clicks in the sandboxed iframe and send a message to the main app context to open
+  // the link
   getAllLinks().forEach(function(node) {
     node.addEventListener('click', function(e) {
       e.preventDefault();

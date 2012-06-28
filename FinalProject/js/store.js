@@ -1,5 +1,9 @@
 var storeModule = angular.module('wReader.store', []);
 
+/**
+ * Persistence service for all feeds data. Abstracts away all persistence operation on the local and cloud storage
+ * and synchronization of data between the two.
+ */
 storeModule.factory('feedStore', function($q, $rootScope) {
   var stateStorage = chrome.storage.sync,
       contentStorage = chrome.storage.local,
@@ -7,6 +11,10 @@ storeModule.factory('feedStore', function($q, $rootScope) {
       syncInProgress = false;
 
 
+  /**
+   * @param storage chrome.storage
+   * @return {Promise} Promise to be resolved with the feed object.
+   */
   function getFeedsFrom(storage) {
     var deferred = $q.defer();
 
@@ -19,6 +27,11 @@ storeModule.factory('feedStore', function($q, $rootScope) {
   }
 
 
+  /**
+   * @param feedContents Object representing feed contents
+   * @param feedStates Object representing feed/entry read and starred states
+   * @return {Promise} Promise to be resolved with syncing is finished.
+   */
   function syncStorages(feedContents, feedStates) {
     var deferred = $q.defer(),
         feedContent, feedState, feedUrl, entryState;
@@ -49,6 +62,12 @@ storeModule.factory('feedStore', function($q, $rootScope) {
 
 
   return {
+    /**
+     * Merges the new feed dump, existing feed content in local store and feed states from the cloud.
+     *
+     * @param updatedFeed Data for a single feed.
+     * @return {Promise} Promise to be resolved with feeds object after the merge.
+     */
     updateFeed: function(updatedFeed) {
       var deferred = $q.defer();
 
@@ -77,6 +96,14 @@ storeModule.factory('feedStore', function($q, $rootScope) {
     },
 
 
+    /**
+     * Updates a single feed entry property in both local and cloud storages.
+     *
+     * @param feedUrl
+     * @param entryId
+     * @param propName
+     * @param propValue
+     */
     updateEntryProp: function(feedUrl, entryId, propName, propValue) {
       getFeedsFrom(contentStorage).then(function(feeds) {
         feeds[feedUrl].entries[entryId][propName] = propValue;
@@ -93,18 +120,25 @@ storeModule.factory('feedStore', function($q, $rootScope) {
     },
 
 
+    /**
+     * @return {Promise} Promise to be resolved with all feeds data from the local storage.
+     */
     getAll: function() {
       return getFeedsFrom(contentStorage);
     },
 
 
+    /**
+     *
+     * @return {Promise} Promise to be resolved when all syncing is done.
+     */
     sync: function() {
       if (!syncInProgress) {
         syncInProgress = true;
 
         return $q.all([getFeedsFrom(contentStorage), getFeedsFrom(stateStorage)]).then(function(results) {
 
-          syncStorages(results[0], results[1]).then(function() {
+          return syncStorages(results[0], results[1]).then(function() {
             syncInProgress = false;
           });
 
@@ -115,6 +149,9 @@ storeModule.factory('feedStore', function($q, $rootScope) {
     },
 
 
+    /**
+     * Registers a chrome.storage.onChange event listener that will sync cloud storage changes into the local storage.
+     */
     keepInSync: function() {
       if (keepInSyncOn) return;
 

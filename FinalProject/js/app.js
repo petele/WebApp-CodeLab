@@ -8,6 +8,7 @@ wReader.run(function(items) {
 });
 
 
+// Main app controller
 function AppController($scope, items, scroll, bgPage) {
 
   $scope.items = items;
