@@ -52,7 +52,7 @@ storeModule.factory('feedStore', function($q, $rootScope) {
     }
 
     contentStorage.set({feeds: feedContents}, function() {
-      console.log('synced content(local) and states (sync) storages');
+      console.log('synced local and cloud storages');
       deferred.resolve();
       if (!$rootScope.$$phase) $rootScope.$apply();
     });
@@ -114,7 +114,7 @@ storeModule.factory('feedStore', function($q, $rootScope) {
         if (!feeds[feedUrl].entries[entryId]) feeds[feedUrl].entries[entryId] = {};
         feeds[feedUrl].entries[entryId][propName] = propValue;
         stateStorage.set({feeds: feeds}, function() {
-          console.log('updated sync storage with', feeds);
+          console.log('cloud storage updated');
         });
       });
     },
@@ -160,7 +160,7 @@ storeModule.factory('feedStore', function($q, $rootScope) {
       chrome.storage.onChanged.addListener(function(diff, namespace) {
         if (namespace != 'sync') return;
 
-        console.log('sync storage changed, syncing changes', diff);
+        console.log('cloud storage changed, syncing changes');
 
         getFeedsFrom(contentStorage).then(function(feedContents) {
           angular.forEach(diff.feeds.newValue, function(feed, feedUrl) {
